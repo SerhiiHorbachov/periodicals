@@ -29,8 +29,16 @@
     <input type="submit" value="Log in"/>
 
 </form>
-<hr>
+<br>
+
+<form action="controller" method="GET">
+    <input type="hidden" name="command" value="register">
+    <input type="submit" value="Register"/>
+</form>
+
 
 
 </body>
 </html>
+
+

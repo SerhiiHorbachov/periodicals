@@ -5,10 +5,10 @@ import ua.periodicals.resource.MessageManager;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class ActionFactory {
+public class CommandFactory {
 
-    public ActionCommand defineCommand(HttpServletRequest request) {
-        ActionCommand current = new EmptyCommand();
+    public Command defineCommand(HttpServletRequest request) {
+        Command current = new EmptyCommand();
 
         // извлечение имени команды из запроса
         String action = request.getParameter("command");

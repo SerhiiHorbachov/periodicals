@@ -9,7 +9,8 @@ public class DBCPDataSource {
     private static BasicDataSource ds = new BasicDataSource();
 
     static {
-        ds.setUrl("jdbc:postgresql://localhost:5432/periodics");
+        ds.setUrl("jdbc:postgresql://localhost:5432/periodicals");
+        ds.setDriverClassName("org.postgresql.Driver");
         ds.setUsername("postgres");
         ds.setPassword("password");
         ds.setMinIdle(5);

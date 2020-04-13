@@ -2,8 +2,15 @@ package ua.periodicals.command;
 
 import ua.periodicals.command.impl.LoginCommand;
 import ua.periodicals.command.impl.LogoutCommand;
+//import ua.periodicals.command.impl.RegisterCommand;
 
 public enum CommandEnum {
+//    REGISTER {
+//        {
+//            this.command = new RegisterCommand();
+//        }
+//    },
+
     LOGIN {
         {
             this.command = new LoginCommand();
@@ -16,9 +23,9 @@ public enum CommandEnum {
         }
     };
 
-    ActionCommand command;
+    Command command;
 
-    public ActionCommand getCurrentCommand() {
+    public Command getCurrentCommand() {
         return command;
     }
 }

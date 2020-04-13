@@ -79,6 +79,11 @@ public class User extends Entity {
         this.passwordHash = passwordHash;
     }
 
+
+    public enum ROLE {
+        ADMIN, USER, GUEST
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,9 +1,10 @@
 package ua.periodicals.controller;
 
-import ua.periodicals.command.ActionCommand;
-import ua.periodicals.command.ActionFactory;
+import ua.periodicals.command.Command;
+import ua.periodicals.command.CommandFactory;
+import ua.periodicals.command.NextPageData;
+import ua.periodicals.command.util.ResponseType;
 import ua.periodicals.resource.ConfigurationManager;
-import ua.periodicals.resource.MessageManager;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,28 +29,28 @@ public class Controller extends HttpServlet {
 
     private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String page = null;
-        // определение команды, пришедшей из JSP
-        ActionFactory client = new ActionFactory();
-        ActionCommand command = client.defineCommand(req);
+        NextPageData nextPageData = null;
 
-        
-        /* вызов реализованного метода execute() и передача параметров
-         * классу-обработчику конкретной команды
-         */
+        CommandFactory commandFactory = new CommandFactory();
+        Command command = commandFactory.defineCommand(req);
 
-        page = command.execute(req);
-        // page = null; // поэксперементировать!
-        if (page != null) {
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
-            // вызов страницы ответа на запрос
-            dispatcher.forward(req, resp);
-        } else {
-            // установка страницы c cообщением об ошибке
-            page = ConfigurationManager.getProperty("path.page.index");
-            req.getSession().setAttribute("nullPage",
-                    MessageManager.getProperty("message.nullpage"));
-            resp.sendRedirect(req.getContextPath() + page);
+        nextPageData = command.execute(req);
+
+        if (nextPageData.getPage() == null) {
+            nextPageData.setPage(ConfigurationManager.getProperty("path.page.main"));
+            nextPageData.setType(ResponseType.FORWARD);
         }
+        
+        switch (nextPageData.getType()) {
+            case FORWARD:
+                RequestDispatcher dispatcher = this.getServletContext().getRequestDispatcher(nextPageData.getPage());
+                dispatcher.forward(req, resp);
+                break;
+            case REDIRECT:
+                resp.sendRedirect(nextPageData.getPage());
+                break;
+        }
+
     }
 
 }
