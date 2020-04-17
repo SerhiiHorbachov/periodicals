@@ -12,42 +12,44 @@
     <title>Admin</title>
 </head>
 <body>
-<h3>Welcome</h3>
-admin page
-<hr>
-${sessionScope.user.firstName}, hello!<br>
-Your role is: ${sessionScope.user.role}
-<br>
-<a href="controller?command=logout">Logout</a>
-<div id="container">
-    <div id="content">
+<header>
+    admin page <br>
+    <h3>Welcome</h3>
+    ${sessionScope.user.firstName}, hello!<br>
+    Your role is: ${sessionScope.user.role}
+    <br>
+    <a href="controller?command=logout">Logout</a>
+    <hr>
+</header>
 
-        <table>
+<div id="content">
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Monthly price</th>
+            <th>Action</th>
+        </tr>
+
+        <c:forEach var="periodical" items="${periodical_list}">
+
             <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Monthly price</th>
-                <th>Action</th>
+                <td>${ periodical.id}</td>
+                <td>${ periodical.name}</td>
+                <td>$${ periodical.monthlyPrice / 100}</td>
+                <td><a href="">Update</a>
+                    |
+                    <a href=""
+                       onclick="if(!(confirm('Are you sure you want to delete the periodical?'))) return false">Delete</a>
+                </td>
+
             </tr>
 
-            <c:forEach var="periodical" items="${periodical_list}">
+        </c:forEach>
 
-                <tr>
-                    <td>${ periodical.id}</td>
-                    <td>${ periodical.name}</td>
-                    <td>$${ periodical.monthlyPrice / 100}</td>
-                    <td><a href="">Update</a>
-                        |
-                        <a href=""
-                           onclick="if(!(confirm('Are you sure you want to delete the periodical?'))) return false">Delete</a>
-                    </td>
-
-                </tr>
-
-            </c:forEach>
-
-        </table>
-    </div>
+    </table>
 </div>
+
 </body>
 </html>

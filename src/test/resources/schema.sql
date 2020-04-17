@@ -1,4 +1,4 @@
-CREATE DATABASE periodicals;
+-- CREATE DATABASE periodicals;
 
 CREATE TABLE users
 (

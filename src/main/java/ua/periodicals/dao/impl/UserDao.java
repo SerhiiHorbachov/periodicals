@@ -12,6 +12,7 @@ import java.util.List;
 public class UserDao extends AbstractUserDao {
 
     public static final String FIND_USER_BY_EMAIL_AND_PWD_HASH_QUERY = "SELECT * FROM users WHERE email=? AND password_hash = ?";
+    public static final String CREATE_USER_QUERY = "INSERT INTO users(user_id, first_name, last_name, role, email, password_hash) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
 
     @Override
     public List<User> findAll() throws DaoException {
@@ -19,8 +20,23 @@ public class UserDao extends AbstractUserDao {
     }
 
     @Override
-    public boolean create(User entity) throws DaoException {
-        return false;
+    public boolean create(User user) throws DaoException {
+        int result = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_USER_QUERY)) {
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getLastName());
+            statement.setString(3, user.getRole());
+            statement.setString(4, user.getEmail());
+            statement.setString(5, user.getPasswordHash());
+
+            result = statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return result > 0;
     }
 
     @Override

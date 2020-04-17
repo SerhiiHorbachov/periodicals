@@ -21,6 +21,8 @@ public class LoginCommand implements Command {
 
     @Override
     public NextPageData execute(HttpServletRequest request) {
+        System.out.println("#INFO LoginCommand started");
+
 
         String page = null;
         User user = null;
@@ -42,6 +44,7 @@ public class LoginCommand implements Command {
         session.setAttribute("user", user);
         session.setAttribute("role", user.getRole());
 
+
         // get all periodicals and pass to request
         List<Periodical> periodicals = PeriodicalLogic.findAll();
         request.setAttribute("periodical_list", periodicals);
@@ -51,6 +54,9 @@ public class LoginCommand implements Command {
         } else {
             page = ConfigurationManager.getProperty("path.page.main");
         }
+
+
+        System.out.println("#INFO LoginCommand completed");
 
         return new NextPageData(page, ResponseType.FORWARD);
 

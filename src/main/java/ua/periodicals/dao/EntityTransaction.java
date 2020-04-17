@@ -22,16 +22,6 @@ public class EntityTransaction {
             }
         }
 
-        /*try {
-            if (connection.isClosed()) {
-                connection = DBCPDataSource.getConnection();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-         */
-
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {

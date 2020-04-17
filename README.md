@@ -8,5 +8,8 @@ Java external course final project
 ## Author
 Serhii Horbachov
 
+## UML
+![](src/main/resources/Publications_UML.png) 
+
 ## Database
 ![](src/main/resources/database.jpeg) 

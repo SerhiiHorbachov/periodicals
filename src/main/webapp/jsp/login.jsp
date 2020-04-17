@@ -11,31 +11,29 @@
     <title>Login</title>
 </head>
 <body>
+<div>
+    <form name="loginForm" action="controller" method="POST">
+        <input type="hidden" name="command" value="login">
+        User email: <br>
+        <input type="text" name="login" value=""/> <br>
+        Enter password: <br>
+        <input type="password" name="password" value=""/> <br>
 
-<form name="loginForm" action="controller" method="POST">
-    <input type="hidden" name="command" value="login">
-    User email: <br>
-    <input type="text" name="login" value=""/> <br>
-    Enter password: <br>
-    <input type="password" name="password" value=""/> <br>
+        <br>
+        ${errorLoginPassMessage}
+        <br>
+        ${wrongAction}
+        <br>
+        ${nullPage}
 
-    <br>
-    ${errorLoginPassMessage}
-    <br>
-    ${wrongAction}
-    <br>
-    ${nullPage}
+        <input type="submit" value="Log in"/>
 
-    <input type="submit" value="Log in"/>
+    </form>
 
-</form>
+</div>
 <br>
 
-<form action="controller" method="GET">
-    <input type="hidden" name="command" value="register">
-    <input type="submit" value="Register"/>
-</form>
-
+<a href="controller?command=go_to_register">Register</a>
 
 
 </body>

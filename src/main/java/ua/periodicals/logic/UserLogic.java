@@ -34,6 +34,29 @@ public class UserLogic {
     }
 
 
+    public static boolean create(User user) {
+
+        boolean isCreated = false;
+
+        AbstractUserDao userDao = new UserDao();
+        EntityTransaction transaction = new EntityTransaction();
+
+        transaction.begin(userDao);
+
+        try {
+            transaction.begin(userDao);
+            isCreated = userDao.create(user);
+            transaction.commit();
+        } catch (DaoException e) {
+            transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            transaction.end();
+        }
+
+        return isCreated;
+
+    }
 
 
 }
