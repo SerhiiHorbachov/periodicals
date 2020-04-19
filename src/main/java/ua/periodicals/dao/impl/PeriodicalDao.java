@@ -45,12 +45,24 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
     }
 
     @Override
+    public Periodical findById(Long id) throws DaoException {
+        return null;
+    }
+
+    @Override
     public boolean create(Periodical entity) throws DaoException {
         return false;
     }
 
     @Override
-    public Periodical findById(Long id) throws DaoException {
-        return null;
+    public boolean update(Periodical entity) throws DaoException {
+        return false;
     }
+
+    @Override
+    public boolean deleteById(Long id) throws DaoException {
+        return false;
+    }
+
+
 }

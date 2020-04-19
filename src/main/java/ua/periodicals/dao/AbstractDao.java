@@ -13,6 +13,10 @@ public abstract class AbstractDao<T extends Entity> {
 
     public abstract boolean create(T entity) throws DaoException;
 
+    public abstract boolean update(T entity) throws DaoException;
+
+    public abstract boolean deleteById(Long id) throws DaoException;
+
     public abstract T findById(Long id) throws DaoException;
 
     public void setConnection(Connection connection) {
