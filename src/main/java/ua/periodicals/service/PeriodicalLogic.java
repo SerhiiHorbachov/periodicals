@@ -1,13 +1,10 @@
-package ua.periodicals.logic;
+package ua.periodicals.service;
 
 import ua.periodicals.dao.AbstractPeriodicalDao;
-import ua.periodicals.dao.AbstractUserDao;
 import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
-import ua.periodicals.dao.impl.UserDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.model.Periodical;
-import ua.periodicals.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

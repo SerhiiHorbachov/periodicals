@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 import ua.periodicals.database.DBCPDataSource;
 import ua.periodicals.database.TestDatabaseManager;
 import ua.periodicals.exception.DaoException;
+import ua.periodicals.model.Periodical;
 import ua.periodicals.model.User;
 
 import java.sql.Connection;
@@ -29,7 +30,6 @@ class UserDaoTest {
         testDatabaseManager.populateDatabase(TEST_DATABASE_SCRIPT_PATH, connection);
         connection.close();
         userDao = new UserDao();
-
     }
 
     /*Tests for User findByEmailAndPassword(String email, String pwdHash)*/
@@ -58,7 +58,7 @@ class UserDaoTest {
         assertEquals(expectedUser, actualUser);
     }
     /*end*/
-    
+
     /*Tests for List<User> findAll()*/
     @Test
     @Order(1)
@@ -112,7 +112,7 @@ class UserDaoTest {
     }
     /*end*/
 
-    /*Tests for boolean User findById(Long id)*/
+    /*Tests for User findById(Long id)*/
     @Test
     void findById_ShouldReturnUserWithMatchingId() throws SQLException, DaoException {
         Long userId = 1L;
@@ -138,8 +138,54 @@ class UserDaoTest {
 
         assertEquals(expectedUser, actualUser);
     }
+    /*end*/
 
+    /*Tests for boolean update(User user)*/
+    @Test
+    void update_ShouldSaveChangedDataInDatabase() throws SQLException {
+        Long userId = 5l;
+        String expectedChangedFirstName = "Changed Name";
+        String expectedChangedEmail = "changed@mail.co";
 
+        User userToUpdate = new User(userId, expectedChangedFirstName, "Pachino", "admin", expectedChangedEmail, "5");
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+        userDao.update(userToUpdate);
+
+        User actualUpdatedUser = userDao.findById(userId);
+        connection.close();
+
+        assertEquals(userToUpdate, actualUpdatedUser);
+    }
+    /*end*/
+
+    /*Tests for boolean deleteById(Long id))*/
+    @Test
+    void deleteById_ShouldRemoveUserWithIndicatedIdFromDatabase() throws SQLException {
+        Long userIdToDelete = 4l;
+
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+
+        long numberOfUsersBeforeRemoving = userDao.findAll().size();
+
+        userDao.deleteById(userIdToDelete);
+
+        long numberOfUsersAfterRemoving = userDao.findAll().size();
+        connection.close();
+
+        assertEquals(numberOfUsersBeforeRemoving, numberOfUsersAfterRemoving + 1);
+    }
+
+    @Test
+    void deleteById_ShouldReturnFalse_WhenPassedIdIsNotPresentInDatabase() throws SQLException {
+        long invalidId = 12000;
+
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+
+        assertFalse(userDao.deleteById(invalidId));
+    }
     /*end*/
 
 

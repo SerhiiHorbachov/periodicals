@@ -1,6 +1,7 @@
 package ua.periodicals.dao;
 
 import ua.periodicals.database.DBCPDataSource;
+import ua.periodicals.exception.DaoException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,14 +19,14 @@ public class EntityTransaction {
             try {
                 connection = DBCPDataSource.getConnection();
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new DaoException("Database connection wasn't established. ", e);
             }
         }
 
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("Failed setting autocommit 'false' for transaction. ", e);
         }
 
         dao.setConnection(connection);
@@ -38,7 +39,7 @@ public class EntityTransaction {
         try {
             connection.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("Failed to commit transaction. ", e);
         }
     }
 
@@ -46,7 +47,7 @@ public class EntityTransaction {
         try {
             connection.rollback();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("Failed to commit transaction. ", e);
         }
     }
 
@@ -54,13 +55,13 @@ public class EntityTransaction {
         try {
             connection.setAutoCommit(true);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("Failed to set autocommit to 'true'. ", e);
         }
 
         try {
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("Failed to close connection. ", e);
         }
 
     }

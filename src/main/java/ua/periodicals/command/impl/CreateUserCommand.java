@@ -4,7 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import ua.periodicals.command.Command;
 import ua.periodicals.command.NextPageData;
 import ua.periodicals.command.util.ResponseType;
-import ua.periodicals.logic.UserLogic;
+import ua.periodicals.service.UserLogic;
 import ua.periodicals.model.User;
 import ua.periodicals.resource.ConfigurationManager;
 import ua.periodicals.resource.MessageManager;

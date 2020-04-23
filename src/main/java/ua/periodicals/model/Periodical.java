@@ -1,5 +1,7 @@
 package ua.periodicals.model;
 
+import java.util.Objects;
+
 public class Periodical extends Entity {
     private long id;
     private String name;
@@ -46,6 +48,22 @@ public class Periodical extends Entity {
 
     public void setMonthlyPrice(int monthlyPrice) {
         this.monthlyPrice = monthlyPrice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Periodical that = (Periodical) o;
+        return id == that.id &&
+                monthlyPrice == that.monthlyPrice &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, monthlyPrice);
     }
 
     @Override

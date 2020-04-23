@@ -1,10 +1,8 @@
 package ua.periodicals.dao.impl;
 
-
 import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.model.Periodical;
-import ua.periodicals.model.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +14,10 @@ import java.util.List;
 public class PeriodicalDao extends AbstractPeriodicalDao {
 
     private static final String FIND_ALL_PERIODICALS_QUERY = "SELECT * FROM periodicals";
+    private static final String FIND_PERIODICAL_BY_ID_QUERY = "SELECT * FROM periodicals WHERE periodical_id=?";
+    private static final String CREATE_PERIODICAL_QUERY = "INSERT INTO periodicals(name, description, monthly_price_cents) VALUES(?, ?, ?)";
+    private static final String UPDATE_PERIODICAL_QUERY = "UPDATE periodicals SET name=?, description=?, monthly_price_cents=? WHERE periodical_id=?";
+    private static final String DELETE_PERIODICAL_QUERY = "DELETE FROM periodicals WHERE periodical_id=?";
 
     @Override
     public List<Periodical> findAll() throws DaoException {
@@ -46,22 +48,79 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
 
     @Override
     public Periodical findById(Long id) throws DaoException {
-        return null;
+        Periodical periodical = null;
+
+        try (PreparedStatement statement = connection.prepareStatement(FIND_PERIODICAL_BY_ID_QUERY)) {
+            statement.setLong(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+
+                int periodicalId = resultSet.getInt("periodical_id");
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                int priceCents = resultSet.getInt("monthly_price_cents");
+
+                periodical = new Periodical(periodicalId, name, description, priceCents);
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return periodical;
     }
 
     @Override
-    public boolean create(Periodical entity) throws DaoException {
-        return false;
+    public boolean create(Periodical periodical) throws DaoException {
+        int result = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_PERIODICAL_QUERY)) {
+            statement.setString(1, periodical.getName());
+            statement.setString(2, periodical.getDescription());
+            statement.setInt(3, periodical.getMonthlyPrice());
+
+            result = statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return result > 0;
     }
 
     @Override
-    public boolean update(Periodical entity) throws DaoException {
-        return false;
+    public boolean update(Periodical periodical) throws DaoException {
+        int result = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_PERIODICAL_QUERY)) {
+            statement.setString(1, periodical.getName());
+            statement.setString(2, periodical.getDescription());
+            statement.setInt(3, periodical.getMonthlyPrice());
+            statement.setLong(4, periodical.getId());
+
+            result = statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return result > 0;
     }
 
     @Override
-    public boolean deleteById(Long id) throws DaoException {
-        return false;
+    public boolean deleteById(Long periodicalId) throws DaoException {
+        int result = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_PERIODICAL_QUERY)) {
+            statement.setLong(1, periodicalId);
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return result > 0;
     }
 
 

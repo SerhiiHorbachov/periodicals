@@ -1,5 +1,10 @@
 -- CREATE DATABASE periodicals;
 
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS invoices;
+DROP TABLE IF EXISTS periodicals;
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE users
 (
     user_id       BIGSERIAL PRIMARY KEY,
@@ -10,7 +15,6 @@ CREATE TABLE users
     password_hash VARCHAR(100)        NOT NULL
 );
 
-
 CREATE TABLE periodicals
 (
     periodical_id       BIGSERIAL PRIMARY KEY,
@@ -18,6 +22,15 @@ CREATE TABLE periodicals
     description         text,
     monthly_price_cents INTEGER      NOT NULL
 );
+CREATE TABLE invoices
+(
+    invoice_id    BIGSERIAL PRIMARY KEY,
+    user_id       BIGINT      NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
+    status        VARCHAR(20) NOT NULL,
+    creation_date TIMESTAMP   NOT NULL,
+    update_date   TIMESTAMP
+);
+
 
 -- data
 INSERT INTO users(user_id, first_name, last_name, role, email, password_hash)
