@@ -79,7 +79,7 @@ public class InvoiceDao extends AbstractInvoiceDao {
 
         try (PreparedStatement statement = connection.prepareStatement(CREATE_INVOICE_QUERY)) {
             statement.setLong(1, invoice.getUserId());
-            statement.setString(2, invoice.getStatus().toString());
+            statement.setString(2, invoice.getStatus().toString().toUpperCase());
 
             result = statement.executeUpdate();
 

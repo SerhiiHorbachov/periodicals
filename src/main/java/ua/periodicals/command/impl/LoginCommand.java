@@ -21,7 +21,12 @@ public class LoginCommand implements Command {
 
     @Override
     public NextPageData execute(HttpServletRequest request) {
-        System.out.println("#INFO LoginCommand started");
+        return null;
+    }
+/*
+    @Override
+    public NextPageData execute(HttpServletRequest request) {
+       System.out.println("#INFO LoginCommand started");
 
 
         String page = null;
@@ -59,6 +64,9 @@ public class LoginCommand implements Command {
         System.out.println("#INFO LoginCommand completed");
 
         return new NextPageData(page, ResponseType.FORWARD);
-
     }
+
+ */
+
+
 }

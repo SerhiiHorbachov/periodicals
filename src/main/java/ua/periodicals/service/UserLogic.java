@@ -45,8 +45,6 @@ public class UserLogic {
         AbstractUserDao userDao = new UserDao();
         EntityTransaction transaction = new EntityTransaction();
 
-        transaction.begin(userDao);
-
         try {
             transaction.begin(userDao);
             isCreated = userDao.create(user);

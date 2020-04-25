@@ -1,8 +1,6 @@
 package ua.periodicals.model;
 
-
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Objects;
 
 public class Invoice extends Entity {
@@ -96,7 +94,7 @@ public class Invoice extends Entity {
 
     public enum STATUS {
         IN_PROGRESS,
-        PROCESSED,
+        COMPLETED,
         CANCELLED
     }
 

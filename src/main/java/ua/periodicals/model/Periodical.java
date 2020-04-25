@@ -11,6 +11,12 @@ public class Periodical extends Entity {
     public Periodical() {
     }
 
+    public Periodical(String name, String description, int monthlyPrice) {
+        this.name = name;
+        this.description = description;
+        this.monthlyPrice = monthlyPrice;
+    }
+
     public Periodical(long id, String name, String description, int monthlyPrice) {
         this.id = id;
         this.name = name;
@@ -68,7 +74,7 @@ public class Periodical extends Entity {
 
     @Override
     public String toString() {
-        return "Periodical{" +
+        return "\nPeriodical{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
