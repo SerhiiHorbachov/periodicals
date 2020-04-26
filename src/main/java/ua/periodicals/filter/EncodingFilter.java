@@ -5,15 +5,13 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import java.io.IOException;
 
-
-@WebFilter(urlPatterns = {"/*"},
+@WebFilter(filterName = "EncodingFilter",
         initParams = {
                 @WebInitParam(name = "encoding", value = "UTF-8", description = "Encoding Param")
         })
 public class EncodingFilter implements Filter {
 
     private String code;
-
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");

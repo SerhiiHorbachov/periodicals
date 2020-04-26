@@ -1,4 +1,4 @@
-package ua.periodicals.service;
+package ua.periodicals.service.impl;
 
 import ua.periodicals.dao.AbstractUserDao;
 import ua.periodicals.dao.EntityTransaction;
@@ -8,7 +8,7 @@ import ua.periodicals.exception.LogicException;
 import ua.periodicals.model.User;
 
 
-public class UserLogic {
+public class UserLogicImpl {
 
     public static User findByEmailAndPwdHash(String email, String pwdHash) {
 
@@ -34,7 +34,6 @@ public class UserLogic {
         }
 
         return user;
-
     }
 
 

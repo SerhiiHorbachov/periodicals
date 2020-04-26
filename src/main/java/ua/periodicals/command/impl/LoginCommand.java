@@ -2,17 +2,8 @@ package ua.periodicals.command.impl;
 
 import ua.periodicals.command.Command;
 import ua.periodicals.command.NextPageData;
-import ua.periodicals.command.util.ResponseType;
-import ua.periodicals.service.PeriodicalLogic;
-import ua.periodicals.service.UserLogic;
-import ua.periodicals.model.Periodical;
-import ua.periodicals.model.User;
-import ua.periodicals.resource.ConfigurationManager;
-import ua.periodicals.resource.MessageManager;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 public class LoginCommand implements Command {
 

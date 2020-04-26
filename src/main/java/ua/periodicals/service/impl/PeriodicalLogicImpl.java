@@ -1,4 +1,4 @@
-package ua.periodicals.service;
+package ua.periodicals.service.impl;
 
 import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.dao.EntityTransaction;
@@ -10,7 +10,7 @@ import ua.periodicals.model.Periodical;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodicalLogic {
+public class PeriodicalLogicImpl {
 
     public List<Periodical> findAll() {
 

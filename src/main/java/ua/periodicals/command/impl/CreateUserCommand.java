@@ -4,7 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import ua.periodicals.command.Command;
 import ua.periodicals.command.NextPageData;
 import ua.periodicals.command.util.ResponseType;
-import ua.periodicals.service.UserLogic;
+import ua.periodicals.service.impl.UserLogicImpl;
 import ua.periodicals.model.User;
 import ua.periodicals.resource.ConfigurationManager;
 import ua.periodicals.resource.MessageManager;
@@ -27,7 +27,7 @@ public class CreateUserCommand implements Command {
         String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
         User user = new User(firstName, lastName, role, email, hashed);
 
-        boolean isCreated = UserLogic.create(user);
+        boolean isCreated = UserLogicImpl.create(user);
 
         if (isCreated) {
             page = ConfigurationManager.getProperty("path.page.registration_success");
