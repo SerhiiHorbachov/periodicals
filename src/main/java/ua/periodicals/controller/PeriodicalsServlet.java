@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/admin/periodicals")
+//@WebServlet("/admin/periodicals")
 public class PeriodicalsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -20,11 +20,16 @@ public class PeriodicalsServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PeriodicalLogicImpl periodicalLogicImpl = new PeriodicalLogicImpl();
+   /*     PeriodicalLogicImpl periodicalLogicImpl = new PeriodicalLogicImpl();
         List<Periodical> periodicals = periodicalLogicImpl.findAll();
+
+        System.out.println("[INFO] METHOD: " + request.getMethod() + request.getServletPath());
+        System.out.println("***");
 
         request.setAttribute("periodicals", periodicals);
 
         RoutingUtils.forwardToPage("admin/periodicals.jsp", request, response);
+
+    */
     }
 }

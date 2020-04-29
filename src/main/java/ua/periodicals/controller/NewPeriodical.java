@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/admin/new-periodical")
+//@WebServlet("/admin/new-periodical")
 public class NewPeriodical extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+/*
         PeriodicalLogicImpl periodicalLogicImpl = new PeriodicalLogicImpl();
 
 
@@ -32,12 +32,14 @@ public class NewPeriodical extends HttpServlet {
 
         RoutingUtils.redirect("/admin/periodicals", request, response);
 
+ */
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 //        request.setAttribute("periodicals", periodicals);
 
-        RoutingUtils.forwardToPage("admin/newPeriodical.jsp", request, response);
+//        RoutingUtils.forwardToPage("admin/newPeriodical.jsp", request, response);
     }
 }

@@ -10,7 +10,7 @@ import ua.periodicals.model.User;
 
 public class UserLogicImpl {
 
-    public static User findByEmailAndPwdHash(String email, String pwdHash) {
+    public User findByEmailAndPwdHash(String email, String pwdHash) {
 
         User user = null;
 
@@ -36,8 +36,7 @@ public class UserLogicImpl {
         return user;
     }
 
-
-    public static boolean create(User user) {
+    public boolean create(User user) {
 
         boolean isCreated = false;
 
