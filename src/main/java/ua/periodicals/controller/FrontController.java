@@ -13,10 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {
+        "/main",
         "/admin/periodicals",
         "/admin/new-periodical",
         "/register",
-        "/login"
+        "/login",
+        "/logout"
 })
 public class FrontController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,11 +37,10 @@ public class FrontController extends HttpServlet {
 
         nextPage = command.execute(request);
 
-
         if (nextPage.getDispatchType().equals("FORWARD")) {
             RoutingUtils.forwardToPage(nextPage.getPage(), request, response);
         } else if (nextPage.getDispatchType().equals("REDIRECT")) {
-            RoutingUtils.forwardToPage(nextPage.getPage(), request, response);
+            RoutingUtils.redirect(nextPage.getPage(), request, response);
         }
 
     }

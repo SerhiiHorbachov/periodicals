@@ -6,7 +6,7 @@ public class User extends Entity {
     private long id;
     private String firstName;
     private String lastName;
-    private String role;
+    private Role userRole;
     private String email;
     private String passwordHash;
 
@@ -14,19 +14,19 @@ public class User extends Entity {
 
     }
 
-    public User(String firstName, String lastName, String role, String email, String passwordHash) {
+    public User(String firstName, String lastName, Role userRole, String email, String passwordHash) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.role = role;
+        this.userRole = userRole;
         this.email = email;
         this.passwordHash = passwordHash;
     }
 
-    public User(long id, String firstName, String lastName, String role, String email, String passwordHash) {
+    public User(long id, String firstName, String lastName, Role userRole, String email, String passwordHash) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.role = role;
+        this.userRole = userRole;
         this.email = email;
         this.passwordHash = passwordHash;
     }
@@ -55,12 +55,12 @@ public class User extends Entity {
         this.lastName = lastName;
     }
 
-    public String getRole() {
-        return role;
+    public Role getUserRole() {
+        return userRole;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setUserRole(Role userRole) {
+        this.userRole = userRole;
     }
 
     public String getEmail() {
@@ -80,7 +80,7 @@ public class User extends Entity {
     }
 
 
-    public enum ROLE {
+    public enum Role {
         ADMIN, USER, GUEST
     }
 
@@ -90,16 +90,12 @@ public class User extends Entity {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return id == user.id &&
-                firstName.equals(user.firstName) &&
-                lastName.equals(user.lastName) &&
-                role.equals(user.role) &&
-                email.equals(user.email) &&
-                passwordHash.equals(user.passwordHash);
+                Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, role, email, passwordHash);
+        return Objects.hash(id, email);
     }
 
     @Override
@@ -108,7 +104,7 @@ public class User extends Entity {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", role='" + role + '\'' +
+                ", role='" + userRole + '\'' +
                 ", email='" + email + '\'' +
                 ", passwordHash='" + passwordHash + '\'' +
                 '}';

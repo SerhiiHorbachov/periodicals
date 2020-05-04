@@ -33,4 +33,12 @@ public class NextPage {
         REDIRECT
     }
 
+
+    @Override
+    public String toString() {
+        return "NextPage{" +
+                "page='" + page + '\'' +
+                ", dispatchType='" + dispatchType + '\'' +
+                '}';
+    }
 }

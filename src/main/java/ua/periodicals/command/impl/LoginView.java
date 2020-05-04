@@ -5,7 +5,7 @@ import ua.periodicals.command.NextPage;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class LoginViewCommand implements ActionCommand {
+public class LoginView implements ActionCommand {
     @Override
     public NextPage execute(HttpServletRequest request) {
         return new NextPage("login.jsp", "FORWARD");

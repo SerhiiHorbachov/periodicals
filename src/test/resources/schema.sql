@@ -31,6 +31,14 @@ CREATE TABLE invoices
     update_date   TIMESTAMP
 );
 
+CREATE TABLE order_items
+(
+    order_item_id   BIGSERIAL PRIMARY KEY,
+    invoice_id      BIGINT REFERENCES invoices (invoice_id)       NOT NULL,
+    periodicals_id  BIGINT REFERENCES periodicals (periodical_id) NOT NULL,
+    price_per_month INTEGER                                       NOT NULL,
+    unique (invoice_id, periodicals_id)
+);
 
 -- data
 INSERT INTO users(user_id, first_name, last_name, role, email, password_hash)
@@ -72,9 +80,28 @@ VALUES (2, 'COMPLETED', '2020-04-10 20:36:56', '2020-04-11 9:30:56'),
        (2, 'COMPLETED', '2020-04-13 20:36:56', '2020-04-14 9:30:56'),
        (2, 'COMPLETED', '2020-04-14 20:36:56', '2020-04-15 9:30:56'),
        (2, 'COMPLETED', '2020-04-15 20:36:56', '2020-04-16 9:30:56'),
-       (2, 'COMPLETED', '2020-04-16 20:36:56', '2020-04-17 9:30:56');
+       (2, 'COMPLETED', '2020-04-16 20:36:56', '2020-04-17 9:30:56'),
+       (2, 'IN_PROGRESS', '2020-04-23 16:44:09', NULL),
+       (2, 'IN_PROGRESS', '2020-04-23 16:46:27', NULL),
+       (2, 'IN_PROGRESS', '2020-04-23 17:00:32', NULL),
+       (2, 'IN_PROGRESS', '2020-04-23 20:36:56', NULL);
 
-
-
-
+INSERT INTO order_items(invoice_id, periodicals_id, price_per_month)
+VALUES (1, 3, 999),
+       (1, 2, 999),
+       (2, 4, 999),
+       (2, 5, 999),
+       (2, 6, 999),
+       (3, 7, 999),
+       (4, 8, 999),
+       (5, 9, 999),
+       (6, 10, 999),
+       (7, 11, 999),
+       (8, 12, 999),
+       (9, 13, 999),
+       (10, 14, 999),
+       (10, 15, 999),
+       (11, 16, 999),
+       (11, 17, 999),
+       (11, 18, 999);
 

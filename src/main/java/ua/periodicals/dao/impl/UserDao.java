@@ -17,6 +17,8 @@ public class UserDao extends AbstractUserDao {
             "SELECT * FROM users";
     public static final String FIND_USER_BY_EMAIL_AND_PWD_HASH_QUERY =
             "SELECT * FROM users WHERE email=? AND password_hash = ?";
+    public static final String FIND_USER_BY_EMAIL_QUERY =
+            "SELECT * FROM users WHERE email=?";
     public static final String FIND_USER_BY_ID_QUERY =
             "SELECT * FROM users WHERE user_id=?";
     public static final String CREATE_USER_QUERY =
@@ -37,7 +39,7 @@ public class UserDao extends AbstractUserDao {
                 Long userId = resultSet.getLong("user_id");
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
-                String role = resultSet.getString("role");
+                User.Role role = User.Role.valueOf(resultSet.getString("role"));
                 String email = resultSet.getString("email");
                 String passwordHash = resultSet.getString("password_hash");
 
@@ -67,11 +69,11 @@ public class UserDao extends AbstractUserDao {
                 Long userId = resultSet.getLong("user_id");
                 String fName = resultSet.getString("first_name");
                 String lName = resultSet.getString("last_name");
-                String storedRole = resultSet.getString("role");
+                User.Role role = User.Role.valueOf(resultSet.getString("role"));
                 String storedEmail = resultSet.getString("email");
                 String storedPwdHash = resultSet.getString("password_hash");
 
-                user = new User(userId, fName, lName, storedRole, storedEmail, storedPwdHash);
+                user = new User(userId, fName, lName, role, storedEmail, storedPwdHash);
             }
 
         } catch (SQLException e) {
@@ -95,12 +97,39 @@ public class UserDao extends AbstractUserDao {
                 int userId = resultSet.getInt("user_id");
                 String fName = resultSet.getString("first_name");
                 String lName = resultSet.getString("last_name");
-                String storedRole = resultSet.getString("role");
+                User.Role role = User.Role.valueOf(resultSet.getString("role"));
                 String storedEmail = resultSet.getString("email");
                 String storedPwdHash = resultSet.getString("password_hash");
 
-                user = new User(userId, fName, lName, storedRole, storedEmail, storedPwdHash);
+                user = new User(userId, fName, lName, role, storedEmail, storedPwdHash);
 
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User findByEmail(String email) throws DaoException {
+        User user = null;
+
+        try (PreparedStatement statement = connection.prepareStatement(FIND_USER_BY_EMAIL_QUERY)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+
+                int userId = resultSet.getInt("user_id");
+                String fName = resultSet.getString("first_name");
+                String lName = resultSet.getString("last_name");
+                User.Role role = User.Role.valueOf(resultSet.getString("role"));
+                String storedEmail = resultSet.getString("email");
+                String storedPwdHash = resultSet.getString("password_hash");
+
+                user = new User(userId, fName, lName, role, storedEmail, storedPwdHash);
             }
 
         } catch (SQLException e) {
@@ -117,7 +146,7 @@ public class UserDao extends AbstractUserDao {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_USER_QUERY)) {
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
-            statement.setString(3, user.getRole());
+            statement.setString(3, user.getUserRole().toString());
             statement.setString(4, user.getEmail());
             statement.setString(5, user.getPasswordHash());
 
@@ -138,7 +167,7 @@ public class UserDao extends AbstractUserDao {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_QUERY)) {
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
-            statement.setString(3, user.getRole());
+            statement.setString(3, user.getUserRole().toString());
             statement.setString(4, user.getEmail());
             statement.setString(5, user.getPasswordHash());
             statement.setLong(6, user.getId());

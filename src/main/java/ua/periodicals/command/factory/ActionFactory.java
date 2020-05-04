@@ -1,11 +1,9 @@
 package ua.periodicals.command.factory;
 
 import ua.periodicals.command.ActionCommand;
-import ua.periodicals.command.impl.LoginViewCommand;
-import ua.periodicals.command.impl.RegisterCommand;
+import ua.periodicals.command.impl.*;
 import ua.periodicals.command.impl.admin.GoToCreateNewPeriodicalCommand;
 import ua.periodicals.command.impl.admin.ListPeriodicals;
-import ua.periodicals.command.impl.RegisterViewCommand;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -18,12 +16,14 @@ public class ActionFactory {
     public ActionFactory() {
         actions = new HashMap<>();
 
+        actions.put("GET/main", new MainView());
         actions.put("GET/admin/periodicals", new ListPeriodicals());
         actions.put("GET/admin/new-periodical", new GoToCreateNewPeriodicalCommand());
-        actions.put("GET/register", new RegisterViewCommand());
-        actions.put("POST/register", new RegisterCommand());
-        actions.put("GET/login", new LoginViewCommand());
-
+        actions.put("GET/register", new RegisterView());
+        actions.put("POST/register", new Register());
+        actions.put("GET/login", new LoginView());
+        actions.put("POST/login", new Login());
+        actions.put("GET/logout", new Logout());
 
     }
 

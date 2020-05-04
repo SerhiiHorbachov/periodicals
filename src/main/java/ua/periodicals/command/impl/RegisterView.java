@@ -5,7 +5,7 @@ import ua.periodicals.command.NextPage;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class RegisterViewCommand implements ActionCommand {
+public class RegisterView implements ActionCommand {
     @Override
     public NextPage execute(HttpServletRequest request) {
         return new NextPage("register.jsp", "FORWARD");
