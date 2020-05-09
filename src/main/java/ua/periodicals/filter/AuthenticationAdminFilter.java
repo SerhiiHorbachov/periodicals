@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter("/my/*")
-public class AuthenticationFilter implements Filter {
+@WebFilter("/admin/*")
+public class AuthenticationAdminFilter implements Filter {
     public void destroy() {
     }
 
@@ -18,10 +18,9 @@ public class AuthenticationFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
-
         HttpSession session = request.getSession();
 
-        if (session == null || session.getAttribute("role") != User.Role.USER.toString()) {
+        if (session == null || session.getAttribute("role") != User.Role.ADMIN.toString()) {
             request.getSession().invalidate();
             response.sendRedirect(request.getContextPath() + "/login");
         } else {
@@ -32,6 +31,5 @@ public class AuthenticationFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {
 
     }
-
 
 }

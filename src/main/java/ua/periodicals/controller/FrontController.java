@@ -13,12 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {
-        "/main",
-        "/admin/periodicals",
-        "/admin/new-periodical",
-        "/register",
-        "/login",
-        "/logout"
+    "/main",
+    "/admin/periodicals",
+    "/admin/new-periodical",
+    "/my/cart",
+    "/my/add-to-cart",
+    "/register",
+    "/login",
+    "/logout"
 })
 public class FrontController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

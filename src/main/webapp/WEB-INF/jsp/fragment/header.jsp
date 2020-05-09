@@ -26,6 +26,8 @@
         <ul class="navbar-nav ml-auto">
             <c:choose>
                 <c:when test="${sessionScope.role != null}">
+                    <li class="nav-item"><a href="/my/cart" class="nav-link">Cart</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">${sessionScope.user.email}</a></li>
                     <li class="nav-item"><a href="/logout" class="nav-link">Log out</a></li>
                 </c:when>
                 <c:otherwise>

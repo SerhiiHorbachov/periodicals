@@ -63,6 +63,8 @@ public class Login implements ActionCommand {
 
             HttpSession session = request.getSession();
             String role = user.getUserRole().toString();
+
+            session.setAttribute("user", user);
             session.setAttribute("role", role);
 
         }
