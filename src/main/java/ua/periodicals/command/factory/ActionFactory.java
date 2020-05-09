@@ -17,6 +17,9 @@ public class ActionFactory {
         actions = new HashMap<>();
 
         actions.put("GET/main", new MainView());
+        actions.put("GET/my/cart", new CartView());
+        actions.put("POST/my/cart/remove", new RemoveFromCart());
+        actions.put("POST/main/add-to-cart", new AddToCart());
         actions.put("GET/admin/periodicals", new ListPeriodicals());
         actions.put("GET/admin/new-periodical", new GoToCreateNewPeriodicalCommand());
         actions.put("GET/register", new RegisterView());
@@ -31,8 +34,19 @@ public class ActionFactory {
         //Remove!
         System.out.println("--Define Command");
         ActionCommand command = null;
+        String formActionCmd = null;
+
+        if (request.getMethod().equals("POST") && request.getParameter("command") != null) {
+
+            System.out.println("[INFO] DEFINING POST CMD: " + request.getParameter("command"));
+            formActionCmd = "/" + request.getParameter("command");
+
+        }
 
         String action = request.getMethod() + request.getServletPath();
+        if (formActionCmd != null) {
+            action = action + formActionCmd;
+        }
 
         //Remove!
         System.out.println("Action: " + action);

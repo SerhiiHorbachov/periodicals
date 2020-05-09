@@ -114,4 +114,29 @@ public class PeriodicalLogicImpl {
 
         return result;
     }
+
+    public boolean delete(long id) {
+        boolean result = false;
+
+        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
+        EntityTransaction transaction = new EntityTransaction();
+
+        try {
+            transaction.begin(periodicalDao);
+            periodicalDao.deleteById(id);
+            transaction.commit();
+        } catch (DaoException e) {
+            transaction.rollback();
+            throw new LogicException("Failed to perform transaction", e);
+        } finally {
+            try {
+                transaction.end();
+            } catch (DaoException e) {
+                transaction.rollback();
+                throw new LogicException("Failed to end transaction", e);
+            }
+        }
+
+        return result;
+    }
 }

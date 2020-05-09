@@ -1,7 +1,5 @@
 package ua.periodicals.filter;
 
-import ua.periodicals.model.User;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -9,29 +7,27 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter("/my/*")
-public class AuthenticationFilter implements Filter {
+@WebFilter(filterName = "TrackingFilter")
+public class TrackingFilter implements Filter {
     public void destroy() {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
         HttpSession session = request.getSession();
 
-        if (session == null || session.getAttribute("role") != User.Role.USER.toString()) {
-            request.getSession().invalidate();
-            response.sendRedirect(request.getContextPath() + "/login");
-        } else {
-            chain.doFilter(req, resp);
-        }
+        System.out.println("[INFO] AuthFilter getContextPath(): " + request.getContextPath());
+        System.out.println("[INFO] AuthFilter getRequestURL(): " + request.getRequestURL());
+        System.out.println("[INFO] AuthFilter getRequestURI(): " + request.getRequestURI());
+        System.out.println("[INFO] AuthFilter getServletPath(): " + request.getServletPath());
+        
+        chain.doFilter(req, resp);
     }
 
     public void init(FilterConfig config) throws ServletException {
 
     }
-
 
 }
