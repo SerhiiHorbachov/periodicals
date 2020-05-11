@@ -2,8 +2,7 @@ package ua.periodicals.command.factory;
 
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.impl.*;
-import ua.periodicals.command.impl.admin.GoToCreateNewPeriodicalCommand;
-import ua.periodicals.command.impl.admin.ListPeriodicals;
+import ua.periodicals.command.impl.admin.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -19,8 +18,13 @@ public class ActionFactory {
         actions.put("GET/main", new MainView());
         actions.put("GET/my/cart", new CartView());
         actions.put("POST/my/cart/remove", new RemoveFromCart());
+        actions.put("POST/my/cart/submit-invoice", new SubmitInvoice());
         actions.put("POST/main/add-to-cart", new AddToCart());
         actions.put("GET/admin/periodicals", new ListPeriodicals());
+        actions.put("GET/admin/invoices/in_progress", new InvoicesView());
+        actions.put("GET/admin/invoices/view", new InvoiceView());
+        actions.put("POST/admin/invoices/approve", new InvoiceApprove());
+        actions.put("POST/admin/invoices/cancel", new InvoiceCancel());
         actions.put("GET/admin/new-periodical", new GoToCreateNewPeriodicalCommand());
         actions.put("GET/register", new RegisterView());
         actions.put("POST/register", new Register());

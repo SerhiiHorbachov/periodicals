@@ -12,16 +12,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {
-    "/main",
-    "/admin/periodicals",
-    "/admin/new-periodical",
-    "/my/cart",
-    "/my/add-to-cart",
-    "/register",
-    "/login",
-    "/logout"
-})
+@WebServlet(
+    urlPatterns = {
+        "/main",
+        "/admin/periodicals",
+        "/admin/invoices",
+        "/admin/new-periodical",
+        "/admin/invoices/in_progress",
+        "/admin/invoices/view",
+        "/my/cart",
+        "/my/add-to-cart",
+        "/register",
+        "/login",
+        "/logout"
+    }
+
+)
 public class FrontController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);

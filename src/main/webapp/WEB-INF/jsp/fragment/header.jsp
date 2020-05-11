@@ -12,7 +12,7 @@
 <%--<hr>--%>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a href="#" class="navbar-brand">Subscriby</a>
+    <a href="/" class="navbar-brand">Subscriby</a>
 
     <div class="collapse navbar-collapse">
         <c:if test="${sessionScope.role.equals('ADMIN') }">

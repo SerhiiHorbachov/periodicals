@@ -45,6 +45,31 @@ public class UserLogicImpl {
 
     }
 
+    public User findById(Long id) {
+
+        User user;
+
+        AbstractUserDao userDao = new UserDao();
+        EntityTransaction transaction = new EntityTransaction();
+
+        try {
+            transaction.begin(userDao);
+            user = userDao.findById(id);
+            transaction.commit();
+        } catch (DaoException e) {
+            transaction.rollback();
+            throw new LogicException(e);
+        } finally {
+            try {
+                transaction.end();
+            } catch (DaoException e) {
+                throw new LogicException("Failed to end transaction", e);
+            }
+        }
+
+        return user;
+    }
+
     public User findByEmail(String email) {
 
         User user = null;

@@ -11,15 +11,16 @@ import java.util.List;
 public class InvoiceDao extends AbstractInvoiceDao {
 
     public static final String FIND_ALL_INVOICES_QUERY =
-            "SELECT * FROM invoices";
+        "SELECT * FROM invoices";
     public static final String CREATE_INVOICE_QUERY =
-            "INSERT INTO invoices (user_id, status, creation_date) VALUES (?, ?, now())";
+        "INSERT INTO invoices (user_id, status, creation_date) VALUES (?, ?, now())";
     public static final String FIND_INVOICE_BY_ID_QUERY =
-            "SELECT * FROM invoices WHERE invoice_id = ?";
+        "SELECT * FROM invoices WHERE invoice_id = ?";
     public static final String UPDATE_INVOICE_STATUS_QUERY =
-            "UPDATE invoices SET status = ? , update_date = now() WHERE invoice_id = ?";
+        "UPDATE invoices SET status = ? , update_date = now() WHERE invoice_id = ?";
     public static final String DELETE_INVOICE_BY_ID_QUERY =
-            "DELETE FROM invoices WHERE invoice_id = ?";
+        "DELETE FROM invoices WHERE invoice_id = ?";
+    public static final String FIND_ALL_IN_PROGRESS_QUERY = "SELECT * FROM invoices where status='IN_PROGRESS';";
 
     @Override
     public List<Invoice> findAll() throws DaoException {
@@ -44,6 +45,11 @@ public class InvoiceDao extends AbstractInvoiceDao {
         }
 
         return invoices;
+    }
+
+    @Override
+    public boolean create(Invoice entity) throws DaoException {
+        return false;
     }
 
     @Override
@@ -74,20 +80,27 @@ public class InvoiceDao extends AbstractInvoiceDao {
     }
 
     @Override
-    public boolean create(Invoice invoice) throws DaoException {
-        int result = 0;
+    public long submit(Invoice invoice) throws DaoException {
+        System.out.println(">>InvoiceDao submit(Invoice invoice)");
 
-        try (PreparedStatement statement = connection.prepareStatement(CREATE_INVOICE_QUERY)) {
+        int returnedId = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_INVOICE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
             statement.setLong(1, invoice.getUserId());
             statement.setString(2, invoice.getStatus().toString().toUpperCase());
 
-            result = statement.executeUpdate();
+            statement.executeUpdate();
+
+            ResultSet rs = statement.getGeneratedKeys();
+            while (rs.next()) {
+                returnedId = rs.getInt(1);
+            }
 
         } catch (SQLException e) {
             throw new DaoException("Failed to save new invoice. ", e);
         }
 
-        return result > 0;
+        return returnedId;
     }
 
     @Override
@@ -122,5 +135,29 @@ public class InvoiceDao extends AbstractInvoiceDao {
         return result > 0;
     }
 
+    @Override
+    public List<Invoice> getInProgress() {
+        List<Invoice> invoices = new ArrayList<>();
 
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(FIND_ALL_IN_PROGRESS_QUERY);
+
+            while (resultSet.next()) {
+                Long invoiceId = resultSet.getLong("invoice_id");
+                Long userId = resultSet.getLong("user_id");
+                String status = resultSet.getString("status");
+                Timestamp createdAt = resultSet.getTimestamp("creation_date");
+                Timestamp updatedAt = resultSet.getTimestamp("update_date");
+
+                Invoice tempInvoice = new Invoice(invoiceId, userId, Invoice.STATUS.valueOf(status.toUpperCase()), createdAt, updatedAt);
+                invoices.add(tempInvoice);
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException("Failed to get all invoices from database. ", e);
+        }
+
+        return invoices;
+    }
+    
 }

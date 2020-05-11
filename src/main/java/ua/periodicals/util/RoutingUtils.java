@@ -23,5 +23,6 @@ public class RoutingUtils {
 
     public static void redirect(String url, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.sendRedirect(url);
+
     }
 }

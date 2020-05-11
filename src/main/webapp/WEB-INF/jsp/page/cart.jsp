@@ -46,8 +46,8 @@
         </c:forEach>
 
         <div>
-            <form action="">
-                <input type="hidden">
+            <form action="/my/cart" method="post">
+                <input type="hidden" name="command" value="submit-invoice">
                 <div class="text-center">
                     <input type="submit" class="btn btn-success ml-auto"
                            value="Pay invoice">
@@ -64,4 +64,10 @@
         </div>
 
     </c:if>
+
+<%--    <c:if test="${requestScope.submit_success != null}">--%>
+<%--        <div class="text-center">--%>
+<%--                ${submit_success}--%>
+<%--        </div>--%>
+<%--    </c:if>--%>
 </div>

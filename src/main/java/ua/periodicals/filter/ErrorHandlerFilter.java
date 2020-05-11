@@ -20,6 +20,8 @@ public class ErrorHandlerFilter implements Filter {
         try {
             chain.doFilter(req, resp);
         } catch (Throwable th) {
+
+            System.out.println(th);
             String requestedUrl = request.getRequestURI();
             //Logger.error("Request " + requestedUrl + " failed: " + th.getMessage(), th);
             RoutingUtils.forwardToPage("error.jsp", request, response);
