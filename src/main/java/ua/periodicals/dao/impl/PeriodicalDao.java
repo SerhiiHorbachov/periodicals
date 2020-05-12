@@ -18,6 +18,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
     private static final String CREATE_PERIODICAL_QUERY = "INSERT INTO periodicals(name, description, monthly_price_cents) VALUES(?, ?, ?)";
     private static final String UPDATE_PERIODICAL_QUERY = "UPDATE periodicals SET name=?, description=?, monthly_price_cents=? WHERE periodical_id=?";
     private static final String DELETE_PERIODICAL_QUERY = "DELETE FROM periodicals WHERE periodical_id=?";
+    private static final String FIND_PERIODICALS_PER_PAGE_QUERY = " SELECT * FROM periodicals ORDER BY periodical_id LIMIT ? OFFSET (?)";
+    private static final String COUNT_ALL_QUERY = "SELECT COUNT(*) FROM periodicals";
 
     @Override
     public List<Periodical> findAll() throws DaoException {
@@ -44,6 +46,56 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
         }
 
         return periodicals;
+    }
+
+    @Override
+    public List<Periodical> getPerPage(int start, int total) throws DaoException {
+        List<Periodical> periodicals = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(FIND_PERIODICALS_PER_PAGE_QUERY)) {
+            statement.setInt(1, total);
+            statement.setInt(2, start - 1);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+
+                int periodicalId = resultSet.getInt("periodical_id");
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                int monthlyPrice = resultSet.getInt("monthly_price_cents");
+
+                Periodical tempPeriodical = new Periodical(periodicalId, name, description, monthlyPrice);
+                periodicals.add(tempPeriodical);
+
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return periodicals;
+    }
+
+    @Override
+    public Long getCount() {
+        Long count = null;
+
+        try (Statement statement = connection.createStatement()) {
+
+            ResultSet resultSet = statement.executeQuery(COUNT_ALL_QUERY);
+
+            while (resultSet.next()) {
+
+                count = resultSet.getLong(1);
+                System.out.println("count: " + count);
+
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+
+        return count;
     }
 
     @Override

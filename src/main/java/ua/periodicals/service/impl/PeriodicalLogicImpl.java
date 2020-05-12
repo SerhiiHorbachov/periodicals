@@ -38,6 +38,64 @@ public class PeriodicalLogicImpl {
         return periodicals;
     }
 
+    public Long getCount() {
+        Long count = null;
+
+        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
+        EntityTransaction transaction = new EntityTransaction();
+
+        try {
+            transaction.begin(periodicalDao);
+            count = periodicalDao.getCount();
+            transaction.commit();
+        } catch (DaoException e) {
+            transaction.rollback();
+            throw new LogicException("Failed to perform transaction", e);
+        } finally {
+            try {
+                transaction.end();
+            } catch (DaoException e) {
+                transaction.rollback();
+                throw new LogicException("Failed to end transaction", e);
+            }
+        }
+
+        return count;
+    }
+
+    public List<Periodical> getPerPage(int page, int total) {
+
+        List<Periodical> periodicals = new ArrayList<>();
+
+        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
+        EntityTransaction transaction = new EntityTransaction();
+
+        int start = page;
+
+        if (page != 1) {
+            start = (page - 1) * total + 1;
+        }
+
+        try {
+            transaction.begin(periodicalDao);
+            periodicals = periodicalDao.getPerPage(start, total);
+            transaction.commit();
+        } catch (DaoException e) {
+            transaction.rollback();
+            throw new LogicException("Failed to perform transaction", e);
+        } finally {
+            try {
+                transaction.end();
+            } catch (DaoException e) {
+                transaction.rollback();
+                throw new LogicException("Failed to end transaction", e);
+            }
+        }
+
+        return periodicals;
+    }
+
+
     public Periodical findById(long id) {
 
         Periodical periodical = null;

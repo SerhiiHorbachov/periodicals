@@ -7,7 +7,6 @@
 <div class="container">
     <c:forEach var="periodical" items="${periodicals}">
 
-
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-body">
@@ -36,8 +35,56 @@
 
         </div>
 
-
     </c:forEach>
+
+    <div class="text-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination pg-blue justify-content-center">
+                <c:forEach begin="1" end="${totalPages}" var="i">
+
+                    <%--                <li class="page-item disabled">--%>
+                    <%--                    <a class="page-link" tabindex="-1">Previous</a>--%>
+                    <%--                </li>--%>
+
+                    <%--                <li class="page-item"><a class="page-link">1</a></li>--%>
+
+                    <%--                <li class="page-item active">--%>
+                    <%--                    <a class="page-link">2 <span class="sr-only">(current)</span></a>--%>
+                    <%--                </li>--%>
+
+
+                    <%--                    <li class="page-item"><a--%>
+                    <%--                            href="${pageContext.request.contextPath}/main?page=${i}"--%>
+                    <%--                            class="page-link">${i}</a>--%>
+                    <%--                    </li>--%>
+
+
+                    <c:choose>
+                        <c:when test="${activePage == i}">
+                            <li class="page-item active">
+                                <a class="page-link"
+                                   href="${pageContext.request.contextPath}/main?page=${i}">${i}</a>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="${pageContext.request.contextPath}/main?page=${i}">${i}</a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+
+
+                    <%--                <li class="page-item">--%>
+                    <%--                    <a class="page-link">Next</a>--%>
+                    <%--                </li>--%>
+
+                </c:forEach>
+            </ul>
+        </nav>
+    </div>
+
+
 </div>
 
 
