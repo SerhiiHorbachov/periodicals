@@ -1,24 +1,39 @@
-<h2>Login</h2>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<form action="/login" method="post" class="main-form needs-validation" novalidate>
-    <div class="alert alert-warning">
-        ${authenticationErrorMessage}
-    </div>
 
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" id="email" name="email" class="form-control" required>
-    </div>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="login_messages"/>
 
-    <div class="form-group">
-        <label for="pwd">Password</label>
-        <input type="password" id="pwd" name="password" class="form-control" required>
-    </div>
+<div class="mt-5">
+    <form action="/login" method="post" class="main-form needs-validation" novalidate>
+        <c:if test="${authenticationErrorMessage != null}">
+            <div class="alert alert-warning">
+                    ${authenticationErrorMessage}
+            </div>
+        </c:if>
 
-    <button type="submit" class="btn btn-success">Login</button>
-    <a href="/register" class="btn btn-light" role="button">Register</a>
+        <div class="form-group">
+            <label for="email"><fmt:message key="msg.email"/></label>
+            <input type="text" id="email" name="email" class="form-control" required>
+        </div>
 
-</form>
+        <div class="form-group">
+            <label for="pwd"><fmt:message key="msg.password"/></label>
+            <input type="password" id="pwd" name="password" class="form-control" required>
+        </div>
+
+        <div class="row">
+
+            <a href="${pageContext.request.contextPath}/register" class="btn btn-light "
+               role="button"><fmt:message
+                    key="msg.register"/></a>
+            <button type="submit" class="btn btn-success ml-auto"><fmt:message
+                    key="msg.login"/></button>
+        </div>
+
+    </form>
+</div>
 
 <script>
     var form = document.querySelector('.needs-validation');

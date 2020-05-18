@@ -1,5 +1,7 @@
 package ua.periodicals.command.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Cart;
@@ -11,20 +13,24 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public class AddToCart implements ActionCommand {
+    private final static String PERIODICAL_ID_REQUEST_PARAM = "periodicalId";
+    private final static String CART_SESSION_ATTRIBUTE = "cart";
+
+    private static final Logger LOG = LoggerFactory.getLogger(AddToCart.class);
 
     @Override
     public NextPage execute(HttpServletRequest request) {
 
-        System.out.println(">>AddToCart action");
+        LOG.debug("Try to add to cart, periodical id={}, from page={}", request.getParameter(PERIODICAL_ID_REQUEST_PARAM), request.getParameter("currentPage"));
 
         NextPage next = new NextPage();
         HttpSession session = request.getSession();
 
         PeriodicalLogicImpl periodicalLogic = new PeriodicalLogicImpl();
 
-        Periodical periodical = periodicalLogic.findById(Long.parseLong(request.getParameter("periodicalId")));
+        Periodical periodical = periodicalLogic.findById(Long.parseLong(request.getParameter(PERIODICAL_ID_REQUEST_PARAM)));
 
-        Cart cart = (Cart) session.getAttribute("cart");
+        Cart cart = (Cart) session.getAttribute(CART_SESSION_ATTRIBUTE);
 
         if (cart != null) {
 
@@ -38,8 +44,9 @@ public class AddToCart implements ActionCommand {
                 request.setAttribute("alreadyInCart", message);
                 request.setAttribute("invalidId", invalidId);
 
-                next.setPage("main.jsp");
-                next.setDispatchType("FORWARD");
+                next.setPage("/?page=" + request.getParameter("currentPage") + "&inv_id=" + invalidId);
+                next.setDispatchType("REDIRECT");
+
             } else {
                 cart.addItem(periodical);
                 session.setAttribute("cart", cart);
@@ -55,8 +62,6 @@ public class AddToCart implements ActionCommand {
             next.setPage("/my/cart");
             next.setDispatchType("REDIRECT");
         }
-
-        System.out.println("[INFO] cart" + cart.toString());
 
         return next;
     }

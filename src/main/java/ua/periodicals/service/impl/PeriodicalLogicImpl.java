@@ -5,6 +5,7 @@ import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.exception.LogicException;
+import ua.periodicals.exception.ValidationException;
 import ua.periodicals.model.Periodical;
 
 import java.util.ArrayList;
@@ -126,6 +127,8 @@ public class PeriodicalLogicImpl {
 
         boolean result = false;
 
+        validatePeriodical(periodical);
+
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction();
 
@@ -196,5 +199,16 @@ public class PeriodicalLogicImpl {
         }
 
         return result;
+    }
+
+    private void validatePeriodical(Periodical periodical) {
+        if (periodical.getName() == null || periodical.getName().isEmpty() || periodical.getName().isBlank()) {
+            throw new ValidationException("Periodical name cannot be empty.");
+        }
+
+        if (periodical.getMonthlyPrice() < 0) {
+            throw new ValidationException("Price mist be a positive digit.");
+        }
+
     }
 }

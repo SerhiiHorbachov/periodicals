@@ -1,0 +1,3 @@
+20:12:55.634 [main] DEBUG      ua.periodicals.dao.impl.UserDao - Try to get active subscriptions ids for userid=21
+20:45:12.815 [main] DEBUG u.periodicals.command.impl.AddToCart - Try to get active subscriptions for user id=21
+20:45:12.918 [main] DEBUG      ua.periodicals.dao.impl.UserDao - Try to get active subscriptions ids for userid=21

@@ -1,5 +1,7 @@
 package ua.periodicals.dao.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.periodicals.dao.AbstractUserDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.model.User;
@@ -14,18 +16,25 @@ import java.util.List;
 public class UserDao extends AbstractUserDao {
 
     public static final String FIND_ALL_USERS_QUERY =
-            "SELECT * FROM users";
+        "SELECT * FROM users";
     public static final String FIND_USER_BY_EMAIL_AND_PWD_HASH_QUERY =
-            "SELECT * FROM users WHERE email=? AND password_hash = ?";
+        "SELECT * FROM users WHERE email=? AND password_hash = ?";
     public static final String FIND_USER_BY_EMAIL_QUERY =
-            "SELECT * FROM users WHERE email=?";
+        "SELECT * FROM users WHERE email=?";
     public static final String FIND_USER_BY_ID_QUERY =
-            "SELECT * FROM users WHERE user_id=?";
+        "SELECT * FROM users WHERE user_id=?";
     public static final String CREATE_USER_QUERY =
-            "INSERT INTO users(user_id, first_name, last_name, role, email, password_hash) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
+        "INSERT INTO users(user_id, first_name, last_name, role, email, password_hash) VALUES (DEFAULT, ?, ?, ?, ?, ?)";
     public static final String UPDATE_USER_QUERY =
-            "UPDATE users SET first_name=?, last_name=?, role=?, email=?, password_hash=?  WHERE user_id=?";
+        "UPDATE users SET first_name=?, last_name=?, role=?, email=?, password_hash=?  WHERE user_id=?";
     public static final String DELETE_USER_BY_ID_QUERY = "DELETE FROM users WHERE user_id=?";
+    public static final String ADD_SUBSCRIPTION = "INSERT INTO users_periodicals(user_id, periodical_id) VALUES (?, ?)";
+    public static final String GET_ACTIVE_SUBSCRIPTIONS_BY_USER_ID_QUERY = "SELECT periodical_id from users_periodicals where user_id=?";
+
+    public static final String UNSUBSCRIBE_PERIODICAL_QUERY = "DELETE FROM users_periodicals WHERE user_id = ? AND periodical_id = ?";
+
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserDao.class);
 
     @Override
     public List<User> findAll() {
@@ -195,5 +204,68 @@ public class UserDao extends AbstractUserDao {
 
         return result > 0;
     }
+
+    @Override
+    public boolean addSubscription(long userId, long periodicalId) {
+        LOG.debug("Try to addSubscription: userId={}, periodicalId={}", userId, periodicalId);
+        int result;
+
+        try (PreparedStatement statement = connection.prepareStatement(ADD_SUBSCRIPTION)) {
+            statement.setLong(1, userId);
+            statement.setLong(2, periodicalId);
+            result = statement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOG.error("Failed to add subscription to user: userID={}, periodicalId={}", userId, periodicalId);
+            throw new DaoException(String.format("Failed to add subscription to userId=%d,  periodicalId=%d", userId, periodicalId), e);
+        }
+
+        return result > 0;
+
+    }
+
+    @Override
+    public List<Long> getActiveSubscriptionsIds(long userId) {
+        LOG.debug("Try to get active subscriptions ids for userid={}", userId);
+        List<Long> subscriptionIds = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(GET_ACTIVE_SUBSCRIPTIONS_BY_USER_ID_QUERY)) {
+            statement.setLong(1, userId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("periodical_id");
+                subscriptionIds.add(id);
+            }
+
+        } catch (SQLException e) {
+            LOG.error("Failed to getActiveSubscriptionsIds, userId={}", userId, e);
+            throw new DaoException("Failed to getActiveSubscriptionsIds, userId=" + userId, e);
+        }
+
+        return subscriptionIds;
+    }
+
+    @Override
+    public boolean removeSubscription(Long userId, Long periodicalId) {
+        LOG.debug("Try to remove subscription id={} from user id={}", periodicalId, userId);
+
+        int result = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(UNSUBSCRIBE_PERIODICAL_QUERY)) {
+            statement.setLong(1, userId);
+            statement.setLong(2, periodicalId);
+
+            result = statement.executeUpdate();
+
+        } catch (SQLException e) {
+            LOG.error("Failed to remove subscription id={} from user id={}", periodicalId, userId, e);
+            throw new DaoException("Failed to move subscription userId=" + userId, e);
+        }
+
+        return result > 0;
+    }
+
 
 }

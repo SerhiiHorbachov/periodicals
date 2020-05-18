@@ -1,14 +1,24 @@
 package ua.periodicals.service.impl;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ua.periodicals.command.impl.AddToCart;
 import ua.periodicals.dao.AbstractUserDao;
 import ua.periodicals.dao.EntityTransaction;
+import ua.periodicals.dao.impl.PeriodicalDao;
 import ua.periodicals.dao.impl.UserDao;
 import ua.periodicals.exception.*;
+import ua.periodicals.model.Periodical;
 import ua.periodicals.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserLogicImpl {
     private final static String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{6,20})";
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserLogicImpl.class);
 
     public User authenticate(String email, String password) throws AuthenticationException, InvalidPasswordException {
 
@@ -128,6 +138,73 @@ public class UserLogicImpl {
         return isCreated;
 
     }
+
+    public List<Periodical> getActiveSubscriptions(long userId) {
+
+        LOG.debug("Try to get active subscriptions for user id={}", userId);
+
+        List<Periodical> subscriptions = new ArrayList<>();
+
+        AbstractUserDao userDao = new UserDao();
+        PeriodicalDao periodicalDao = new PeriodicalDao();
+        EntityTransaction transaction = new EntityTransaction();
+
+        try {
+            transaction.begin(userDao, periodicalDao);
+
+            List<Long> subscriptionsIds = userDao.getActiveSubscriptionsIds(userId);
+
+            for (Long subscriptionId : subscriptionsIds) {
+                subscriptions.add(periodicalDao.findById(subscriptionId));
+            }
+
+            transaction.commit();
+        } catch (DaoException e) {
+            LOG.error("Failed to get active subscriptions for user id={}", userId, e);
+            transaction.rollback();
+            throw new LogicException(e);
+        } finally {
+            try {
+                transaction.end();
+            } catch (DaoException e) {
+                LOG.error("Failed to end transaction.", e);
+                throw new LogicException("Failed to end transaction", e);
+            }
+        }
+
+        return subscriptions;
+    }
+
+    public boolean removePeriodicalFromActiveSubscriptions(long userId, long periodicalId) {
+        LOG.debug("Try to remove subscription id={} from user id={}", periodicalId, userId);
+
+        int result = 0;
+
+        AbstractUserDao userDao = new UserDao();
+        EntityTransaction transaction = new EntityTransaction();
+
+        try {
+            transaction.begin(userDao);
+
+            userDao.removeSubscription(userId, periodicalId);
+
+            transaction.commit();
+        } catch (DaoException e) {
+            LOG.error("Failed to remove subscription id={} from user id={}", periodicalId, userId, e);
+            transaction.rollback();
+            throw new LogicException(e);
+        } finally {
+            try {
+                transaction.end();
+            } catch (DaoException e) {
+                LOG.error("Failed to end transaction.", e);
+                throw new LogicException("Failed to end transaction", e);
+            }
+        }
+
+        return result > 0;
+    }
+
 
     private void validateUser(User user) {
         if (user.getFirstName().isEmpty() || user.getFirstName().isBlank()) {

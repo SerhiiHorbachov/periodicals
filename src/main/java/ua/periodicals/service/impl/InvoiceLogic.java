@@ -1,11 +1,15 @@
 package ua.periodicals.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ua.periodicals.command.impl.admin.AddPeriodical;
 import ua.periodicals.dao.AbstractInvoiceDao;
 import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.InvoiceDao;
 import ua.periodicals.dao.impl.OrderItemsDao;
 import ua.periodicals.dao.impl.PeriodicalDao;
+import ua.periodicals.dao.impl.UserDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.exception.LogicException;
 import ua.periodicals.model.Cart;
@@ -18,6 +22,8 @@ import java.util.List;
 
 public class InvoiceLogic {
 
+    private static final Logger LOG = LoggerFactory.getLogger(InvoiceLogic.class);
+
     public boolean submit(long userId, Cart cart) {
         System.out.println(">>InvoiceLogic submit");
         boolean result = false;
@@ -25,7 +31,6 @@ public class InvoiceLogic {
         InvoiceDao invoiceDao = new InvoiceDao();
 
         OrderItemsDao orderItemsDao = new OrderItemsDao();
-
 
         Invoice invoice = new Invoice(userId);
 
@@ -46,7 +51,6 @@ public class InvoiceLogic {
             }
 
             System.out.println("[INFO] orderItems saved");
-
 
             result = true;
             transaction.commit();
@@ -107,7 +111,7 @@ public class InvoiceLogic {
 
             for (OrderItem orderItem : orderItems) {
                 Periodical invoicePeriodical = periodicalDao.findById(orderItem.getPeriodicalId());
-                //Set Periodical price of order items price
+
                 cart.addItem(invoicePeriodical);
 
             }
@@ -154,26 +158,35 @@ public class InvoiceLogic {
     }
 
     public boolean updateStatus(long invoiceId, Invoice.STATUS status) {
-        System.out.println(">>updateStatus: invoiceId" + invoiceId + ", status: " + status.toString());
+        LOG.debug("Try to update invoice status: invoiceId" + invoiceId + ", status: " + status.toString());
 
         boolean result = false;
 
         EntityTransaction transaction = new EntityTransaction();
         InvoiceDao invoiceDao = new InvoiceDao();
-
+        UserDao userDao = new UserDao();
+        OrderItemsDao orderItemsDao = new OrderItemsDao();
 
         try {
-            transaction.begin(invoiceDao);
+            transaction.begin(invoiceDao, userDao, orderItemsDao);
 
             Invoice invoice = invoiceDao.findById(invoiceId);
 
             invoice.setStatus(status);
-            System.out.println("[INFO] Invoice to update: " + invoice);
+
+            if (status.equals(Invoice.STATUS.COMPLETED)) {
+                List<Long> periodicalIds = orderItemsDao.getPeriodicalIdsByInvoiceId(invoice.getId());
+
+                for (Long id : periodicalIds) {
+                    userDao.addSubscription(invoice.getUserId(), id);
+                }
+            }
 
             result = invoiceDao.update(invoice);
-            
+
             transaction.commit();
         } catch (DaoException e) {
+            LOG.error("Failed to do update invoice status: ", e);
             transaction.rollback();
             throw new LogicException("Failed to perform transaction", e);
         } finally {

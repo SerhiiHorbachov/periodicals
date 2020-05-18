@@ -1,5 +1,8 @@
 package ua.periodicals.dao.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ua.periodicals.command.impl.admin.NewPeriodicalView;
 import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.model.Periodical;
@@ -20,6 +23,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
     private static final String DELETE_PERIODICAL_QUERY = "DELETE FROM periodicals WHERE periodical_id=?";
     private static final String FIND_PERIODICALS_PER_PAGE_QUERY = " SELECT * FROM periodicals ORDER BY periodical_id LIMIT ? OFFSET (?)";
     private static final String COUNT_ALL_QUERY = "SELECT COUNT(*) FROM periodicals";
+
+    private static final Logger LOG = LoggerFactory.getLogger(PeriodicalDao.class);
 
     @Override
     public List<Periodical> findAll() throws DaoException {
@@ -131,7 +136,7 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
         try (PreparedStatement statement = connection.prepareStatement(CREATE_PERIODICAL_QUERY)) {
             statement.setString(1, periodical.getName());
             statement.setString(2, periodical.getDescription());
-            statement.setInt(3, periodical.getMonthlyPrice());
+            statement.setLong(3, periodical.getMonthlyPrice());
 
             result = statement.executeUpdate();
 
@@ -149,7 +154,7 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_PERIODICAL_QUERY)) {
             statement.setString(1, periodical.getName());
             statement.setString(2, periodical.getDescription());
-            statement.setInt(3, periodical.getMonthlyPrice());
+            statement.setLong(3, periodical.getMonthlyPrice());
             statement.setLong(4, periodical.getId());
 
             result = statement.executeUpdate();

@@ -22,6 +22,7 @@ public class OrderItemsDao extends AbstractOrderItemsDao {
         "    (?, ?, ?)";
 
     private final static String FIND_BY__INVOICE_ID_QUERY = "SELECT * FROM order_items WHERE invoice_id=?";
+    private final static String FIND_PERIODICAL_IDS_BY_INVOICE_ID = "select periodicals_id from order_items WHERE invoice_id=?";
 
     @Override
     public List<OrderItem> findAll() throws DaoException {
@@ -88,6 +89,28 @@ public class OrderItemsDao extends AbstractOrderItemsDao {
         }
 
         return orderItems;
+    }
+
+    public List<Long> getPeriodicalIdsByInvoiceId(long periodicalId) {
+
+        List<Long> ids = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(FIND_PERIODICAL_IDS_BY_INVOICE_ID)) {
+
+            statement.setLong(1, periodicalId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("periodicals_id");
+                ids.add(id);
+            }
+
+        } catch (SQLException e) {
+            throw new DaoException("Failed to get all users from database. ", e);
+        }
+
+        return ids;
+        
     }
 
 

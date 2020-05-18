@@ -55,4 +55,3 @@ VALUES ('Game Informer', '', '999'),
        ('Wired', '', '999');
 
 
-

@@ -1,5 +1,8 @@
 package ua.periodicals.filter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ua.periodicals.command.impl.admin.EditPeriodicalView;
 import ua.periodicals.util.RoutingUtils;
 
 import javax.servlet.*;
@@ -10,6 +13,10 @@ import java.io.IOException;
 
 @WebFilter(filterName = "ErrorHandlerFilter")
 public class ErrorHandlerFilter implements Filter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EditPeriodicalView.class);
+
+
     public void destroy() {
     }
 
@@ -23,7 +30,7 @@ public class ErrorHandlerFilter implements Filter {
 
             System.out.println(th);
             String requestedUrl = request.getRequestURI();
-            //Logger.error("Request " + requestedUrl + " failed: " + th.getMessage(), th);
+            LOG.error("Request " + requestedUrl + " failed: " + th.getMessage(), th);
             RoutingUtils.forwardToPage("error.jsp", request, response);
         }
     }

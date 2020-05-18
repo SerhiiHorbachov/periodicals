@@ -1,0 +1,2 @@
+19:36:51.230 [main] DEBUG      ua.periodicals.dao.impl.UserDao - Try to addSubscription: userId=1, periodicalId=1
+21:46:59.033 [main] DEBUG      ua.periodicals.dao.impl.UserDao - Try to get active subscriptions ids for userid=21

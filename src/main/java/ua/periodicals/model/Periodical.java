@@ -6,7 +6,7 @@ public class Periodical extends Entity {
     private long id;
     private String name;
     private String description;
-    private int monthlyPrice;
+    private long monthlyPrice;
 
     public Periodical() {
     }
@@ -48,11 +48,11 @@ public class Periodical extends Entity {
         this.description = description;
     }
 
-    public int getMonthlyPrice() {
+    public long getMonthlyPrice() {
         return monthlyPrice;
     }
 
-    public void setMonthlyPrice(int monthlyPrice) {
+    public void setMonthlyPrice(long monthlyPrice) {
         this.monthlyPrice = monthlyPrice;
     }
 

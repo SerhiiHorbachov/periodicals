@@ -36,7 +36,14 @@ CREATE TABLE order_items
     order_item_id   BIGSERIAL PRIMARY KEY,
     invoice_id      BIGINT REFERENCES invoices (invoice_id)       NOT NULL,
     periodicals_id  BIGINT REFERENCES periodicals (periodical_id) NOT NULL,
-    price_per_month BIGINT                                       NOT NULL
+    price_per_month BIGINT                                        NOT NULL
+);
+
+CREATE TABLE users_periodicals
+(
+    user_id       BIGINT REFERENCES users (user_id),
+    periodical_id BIGINT REFERENCES periodicals (periodical_id)
+
 );
 
 -- data
