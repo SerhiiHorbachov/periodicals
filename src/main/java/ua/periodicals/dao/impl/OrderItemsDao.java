@@ -1,14 +1,14 @@
 package ua.periodicals.dao.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.periodicals.dao.AbstractOrderItemsDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.model.OrderItem;
-import ua.periodicals.model.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +24,18 @@ public class OrderItemsDao extends AbstractOrderItemsDao {
     private final static String FIND_BY__INVOICE_ID_QUERY = "SELECT * FROM order_items WHERE invoice_id=?";
     private final static String FIND_PERIODICAL_IDS_BY_INVOICE_ID = "select periodicals_id from order_items WHERE invoice_id=?";
 
+    private static final Logger LOG = LoggerFactory.getLogger(OrderItemsDao.class);
+
     @Override
     public List<OrderItem> findAll() throws DaoException {
+        LOG.debug("Try to find all invoices");
         throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean create(OrderItem orderItem) throws DaoException {
-        System.out.println(">>OrderItemsDao create(OrderItem orderItem) orderItem:" + orderItem.toString());
+        LOG.debug("Try to create orderItem: {}", orderItem);
+
         int result = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(CREATE_ITEM_QUERY)) {
@@ -42,31 +46,35 @@ public class OrderItemsDao extends AbstractOrderItemsDao {
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
+            LOG.error("Failed to create orderItem: {}", orderItem);
             throw new DaoException(e);
         }
 
-        System.out.println(">>OrderItemsDao created successfully");
         return result > 0;
     }
 
     @Override
-    public boolean update(OrderItem entity) throws DaoException {
-        return false;
+    public boolean update(OrderItem orderItem) throws DaoException {
+        LOG.debug("Try to update order item: {}", orderItem);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
-        return false;
+        LOG.debug("Try to delete order item by id={}", id);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public OrderItem findById(Long id) throws DaoException {
-        return null;
+        LOG.debug("Try to find order item by id={}", id);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<OrderItem> findByInvoiceId(Long id) throws DaoException {
-        System.out.println(">>findByInvoiceId(Long id): invoiceId=" + id);
+        LOG.debug("Try to find order items by invoice id={}", id);
+
         List<OrderItem> orderItems = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_BY__INVOICE_ID_QUERY)) {
@@ -85,19 +93,21 @@ public class OrderItemsDao extends AbstractOrderItemsDao {
             }
 
         } catch (SQLException e) {
+            LOG.error("Failed to get all order items by invoice id={}", id);
             throw new DaoException("Failed to get all order items from database. ", e);
         }
 
         return orderItems;
     }
 
-    public List<Long> getPeriodicalIdsByInvoiceId(long periodicalId) {
+    public List<Long> getPeriodicalIdsByInvoiceId(long invoiceId) {
+        LOG.debug("Try to get periodicals ids by invoice id={}", invoiceId);
 
         List<Long> ids = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_PERIODICAL_IDS_BY_INVOICE_ID)) {
 
-            statement.setLong(1, periodicalId);
+            statement.setLong(1, invoiceId);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -106,11 +116,12 @@ public class OrderItemsDao extends AbstractOrderItemsDao {
             }
 
         } catch (SQLException e) {
-            throw new DaoException("Failed to get all users from database. ", e);
+            LOG.error("Failed to get periodical ids by invoice id={}");
+            throw new DaoException("Failed to get periodical ids by invoice id=" + invoiceId, e);
         }
 
         return ids;
-        
+
     }
 
 

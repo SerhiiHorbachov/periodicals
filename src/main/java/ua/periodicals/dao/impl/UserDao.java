@@ -53,6 +53,7 @@ public class UserDao extends AbstractUserDao {
 
     @Override
     public List<User> findAll() {
+        LOG.debug("Try to find all users");
 
         List<User> users = new ArrayList<>();
 
@@ -72,6 +73,7 @@ public class UserDao extends AbstractUserDao {
             }
 
         } catch (SQLException e) {
+            LOG.error("Failed to find all users");
             throw new DaoException("Failed to get all users from database. ", e);
         }
 
@@ -80,6 +82,8 @@ public class UserDao extends AbstractUserDao {
 
     @Override
     public User findById(Long id) throws DaoException {
+
+        LOG.debug("Try to find user by id={}", id);
 
         User user = null;
 
@@ -101,6 +105,7 @@ public class UserDao extends AbstractUserDao {
             }
 
         } catch (SQLException e) {
+            LOG.error("Failed to find user by id={}", id);
             throw new DaoException("Couldn't find user with id=" + id, e);
         }
 
@@ -109,6 +114,8 @@ public class UserDao extends AbstractUserDao {
 
     @Override
     public User findByEmailAndPassword(String email, String pwdHash) throws DaoException {
+        LOG.debug("Try to find user by email and password: {}", email);
+
         User user = null;
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_USER_BY_EMAIL_AND_PWD_HASH_QUERY)) {
@@ -130,7 +137,8 @@ public class UserDao extends AbstractUserDao {
             }
 
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Failed to find user by email and pwd, email={}: ", email, e);
+            throw new DaoException("Failed to find user by email and pwd", e);
         }
 
         return user;
@@ -138,6 +146,8 @@ public class UserDao extends AbstractUserDao {
 
     @Override
     public User findByEmail(String email) throws DaoException {
+        LOG.debug("Try to find user by email: {}", email);
+
         User user = null;
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_USER_BY_EMAIL_QUERY)) {
@@ -157,7 +167,8 @@ public class UserDao extends AbstractUserDao {
             }
 
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Failed to find user by email: {}", email, e);
+            throw new DaoException("Failed to find user by email", e);
         }
 
         return user;
@@ -165,6 +176,8 @@ public class UserDao extends AbstractUserDao {
 
     @Override
     public boolean create(User user) throws DaoException {
+        LOG.debug("Try to create user: {}", user);
+
         int result = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(CREATE_USER_QUERY)) {
@@ -177,6 +190,7 @@ public class UserDao extends AbstractUserDao {
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
+            LOG.error("Failed to create user: {}", user, e);
             throw new DaoException("Failed to save new user. ", e);
         }
 
@@ -185,6 +199,7 @@ public class UserDao extends AbstractUserDao {
 
     @Override
     public boolean update(User user) throws DaoException {
+        LOG.debug("Try to update user: {}", user);
 
         int result = 0;
 
@@ -198,6 +213,7 @@ public class UserDao extends AbstractUserDao {
 
             result = statement.executeUpdate();
         } catch (SQLException e) {
+            LOG.error("Failed to update user: ", user, e);
             throw new DaoException("Failed to update user. UserID=" + user.getId(), e);
         }
 
@@ -207,6 +223,8 @@ public class UserDao extends AbstractUserDao {
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
+        LOG.debug("Try to delete user by id: {}", id);
+
         int result = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(DELETE_USER_BY_ID_QUERY)) {
@@ -214,6 +232,7 @@ public class UserDao extends AbstractUserDao {
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
+            LOG.error("Failed to delete user by id={}", id, e);
             throw new DaoException("Failed to delete user. UserID=" + id, e);
         }
 
@@ -222,7 +241,7 @@ public class UserDao extends AbstractUserDao {
 
     @Override
     public boolean addSubscription(long userId, long periodicalId) {
-        LOG.debug("Try to addSubscription: userId={}, periodicalId={}", userId, periodicalId);
+        LOG.debug("Try to add subscription: userId={}, periodicalId={}", userId, periodicalId);
         int result;
 
         try (PreparedStatement statement = connection.prepareStatement(ADD_SUBSCRIPTION)) {
@@ -231,7 +250,7 @@ public class UserDao extends AbstractUserDao {
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
-            LOG.error("Failed to add subscription to user: userID={}, periodicalId={}", userId, periodicalId);
+            LOG.error("Failed to add subscription to user: userID={}, periodicalId={}", userId, periodicalId, e);
             throw new DaoException(String.format("Failed to add subscription to userId=%d,  periodicalId=%d", userId, periodicalId), e);
         }
 
@@ -297,12 +316,10 @@ public class UserDao extends AbstractUserDao {
 
         } catch (SQLException e) {
             LOG.error("Failed to check if user id={} is subscribed to periodical id={}", userId, periodicalId, e);
-
             throw new DaoException("Failed to check if user id=" + userId + " is subscribed to periodical id=" + periodicalId, e);
         }
 
         return result;
     }
-
 
 }

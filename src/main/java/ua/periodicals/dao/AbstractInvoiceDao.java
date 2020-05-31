@@ -1,6 +1,5 @@
 package ua.periodicals.dao;
 
-
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.model.Invoice;
 

@@ -2,7 +2,6 @@ package ua.periodicals.dao.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.periodicals.command.impl.admin.NewPeriodicalView;
 import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.model.Periodical;
@@ -28,6 +27,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
 
     @Override
     public List<Periodical> findAll() throws DaoException {
+        LOG.debug("Try to findAll periodicals");
+
         List<Periodical> periodicals = new ArrayList<>();
 
         try (Statement statement = connection.createStatement()) {
@@ -47,7 +48,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
             }
 
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Failed to get all periodicals.", e);
+            throw new DaoException("Failed to get all periodicals.", e);
         }
 
         return periodicals;
@@ -55,6 +57,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
 
     @Override
     public List<Periodical> getPerPage(int start, int total) throws DaoException {
+        LOG.debug("Try to get range of periodicals: start={}, total={}", start, total);
+
         List<Periodical> periodicals = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_PERIODICALS_PER_PAGE_QUERY)) {
@@ -75,7 +79,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
             }
 
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Failed to get range of periodicals: start={}, total={}", start, total);
+            throw new DaoException(String.format("Failed to get periodicals in range: start=%d, total=%d", start, total), e);
         }
 
         return periodicals;
@@ -83,6 +88,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
 
     @Override
     public Long getCount() {
+        LOG.debug("Try to get count of periodicals.");
+
         Long count = null;
 
         try (Statement statement = connection.createStatement()) {
@@ -97,7 +104,7 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
             }
 
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException("Failed to count periodicals", e);
         }
 
         return count;
@@ -105,6 +112,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
 
     @Override
     public Periodical findById(Long id) throws DaoException {
+        LOG.debug("Try to find periodical by id={}", id);
+
         Periodical periodical = null;
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_PERIODICAL_BY_ID_QUERY)) {
@@ -123,7 +132,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
             }
 
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Failed to get periodical by id: {}", id, e);
+            throw new DaoException("Failed to get periodical", e);
         }
 
         return periodical;
@@ -131,6 +141,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
 
     @Override
     public boolean create(Periodical periodical) throws DaoException {
+        LOG.debug("Try to create periodical: {}", periodical);
+
         int result = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(CREATE_PERIODICAL_QUERY)) {
@@ -141,7 +153,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Failed to create new periodical: {}", periodical);
+            throw new DaoException("Failed to create new periodical", e);
         }
 
         return result > 0;
@@ -149,6 +162,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
 
     @Override
     public boolean update(Periodical periodical) throws DaoException {
+        LOG.debug("Try to update periodical: {}", periodical);
+
         int result = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_PERIODICAL_QUERY)) {
@@ -160,7 +175,8 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new DaoException(e);
+            LOG.error("Failed to update periodical: {}", periodical);
+            throw new DaoException("Failed to update periodical", e);
         }
 
         return result > 0;
@@ -168,12 +184,15 @@ public class PeriodicalDao extends AbstractPeriodicalDao {
 
     @Override
     public boolean deleteById(Long periodicalId) throws DaoException {
+        LOG.debug("Try to delete periodical by id={}", periodicalId);
+
         int result = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(DELETE_PERIODICAL_QUERY)) {
             statement.setLong(1, periodicalId);
             result = statement.executeUpdate();
         } catch (SQLException e) {
+            LOG.error("Failed to delete periodical id={}", periodicalId);
             throw new DaoException(e);
         }
 

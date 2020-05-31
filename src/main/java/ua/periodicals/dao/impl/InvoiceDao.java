@@ -1,5 +1,7 @@
 package ua.periodicals.dao.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.periodicals.dao.AbstractInvoiceDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.model.Invoice;
@@ -22,8 +24,12 @@ public class InvoiceDao extends AbstractInvoiceDao {
         "DELETE FROM invoices WHERE invoice_id = ?";
     public static final String FIND_ALL_IN_PROGRESS_QUERY = "SELECT * FROM invoices where status='IN_PROGRESS';";
 
+    private static final Logger LOG = LoggerFactory.getLogger(InvoiceDao.class);
+
     @Override
     public List<Invoice> findAll() throws DaoException {
+        LOG.debug("Try to find find all invoices");
+
         List<Invoice> invoices = new ArrayList<>();
 
         try (Statement statement = connection.createStatement()) {
@@ -41,6 +47,7 @@ public class InvoiceDao extends AbstractInvoiceDao {
             }
 
         } catch (SQLException e) {
+            LOG.error("Failed to get all invoices from database.", e);
             throw new DaoException("Failed to get all invoices from database. ", e);
         }
 
@@ -49,11 +56,14 @@ public class InvoiceDao extends AbstractInvoiceDao {
 
     @Override
     public boolean create(Invoice entity) throws DaoException {
-        return false;
+        LOG.debug("Try to find create invoice, {}", entity);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Invoice findById(Long id) throws DaoException {
+        LOG.debug("Try to find invoice by id={}", id);
+
         Invoice invoice = null;
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_INVOICE_BY_ID_QUERY)) {
@@ -73,6 +83,7 @@ public class InvoiceDao extends AbstractInvoiceDao {
             }
 
         } catch (SQLException e) {
+            LOG.error("Failed to get invoice by id={}", id);
             throw new DaoException("Couldn't find invoice with id=" + id, e);
         }
 
@@ -81,7 +92,7 @@ public class InvoiceDao extends AbstractInvoiceDao {
 
     @Override
     public long submit(Invoice invoice) throws DaoException {
-        System.out.println(">>InvoiceDao submit(Invoice invoice)");
+        LOG.debug("Try to submit invoice: {}", invoice);
 
         int returnedId = 0;
 
@@ -97,6 +108,7 @@ public class InvoiceDao extends AbstractInvoiceDao {
             }
 
         } catch (SQLException e) {
+            LOG.error("Failed to submit invoice: {}", invoice);
             throw new DaoException("Failed to save new invoice. ", e);
         }
 
@@ -105,6 +117,8 @@ public class InvoiceDao extends AbstractInvoiceDao {
 
     @Override
     public boolean update(Invoice invoice) throws DaoException {
+        LOG.debug("Try to up update invoice: {}", invoice);
+
         int result = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_INVOICE_STATUS_QUERY)) {
@@ -114,6 +128,7 @@ public class InvoiceDao extends AbstractInvoiceDao {
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
+            LOG.error("Failed to update invoice, {}", invoice);
             throw new DaoException("Failed to update invoice, invoiceId=" + invoice.getId(), e);
         }
 
@@ -122,6 +137,8 @@ public class InvoiceDao extends AbstractInvoiceDao {
 
     @Override
     public boolean deleteById(Long id) throws DaoException {
+        LOG.debug("Try to delete invoice by id={}", id);
+
         int result = 0;
 
         try (PreparedStatement statement = connection.prepareStatement(DELETE_INVOICE_BY_ID_QUERY)) {
@@ -129,6 +146,7 @@ public class InvoiceDao extends AbstractInvoiceDao {
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
+            LOG.error("Failed to delete invoice, id={}", id);
             throw new DaoException("Failed to delete invoice. UserID=" + id, e);
         }
 
@@ -137,6 +155,7 @@ public class InvoiceDao extends AbstractInvoiceDao {
 
     @Override
     public List<Invoice> getInProgress() {
+        LOG.debug("Try to get all in progress invoices");
         List<Invoice> invoices = new ArrayList<>();
 
         try (Statement statement = connection.createStatement()) {
@@ -154,10 +173,11 @@ public class InvoiceDao extends AbstractInvoiceDao {
             }
 
         } catch (SQLException e) {
+            LOG.error("Failed to get all in progress invoices");
             throw new DaoException("Failed to get all invoices from database. ", e);
         }
 
         return invoices;
     }
-    
+
 }
