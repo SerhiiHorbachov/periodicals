@@ -33,6 +33,7 @@ class PeriodicalDaoTest {
     }
 
     /*Tests for List<User> findAll()*/
+    @Disabled
     @Test
     @Order(1)
     void findAll_ShouldRetrievePeriodicalsFromTablePeriodicals() throws SQLException {
@@ -47,6 +48,8 @@ class PeriodicalDaoTest {
 
         assertEquals(expectedListSize, actualListSize);
     }
+
+
     /*end*/
 
     /*Tests for Periodical findById(Long id)*/

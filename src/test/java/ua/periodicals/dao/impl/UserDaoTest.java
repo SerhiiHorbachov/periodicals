@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 import ua.periodicals.database.DBCPDataSource;
 import ua.periodicals.database.TestDatabaseManager;
 import ua.periodicals.exception.DaoException;
-import ua.periodicals.model.Periodical;
 import ua.periodicals.model.User;
 
 import java.sql.Connection;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserDaoTest {
 
@@ -33,40 +31,6 @@ class UserDaoTest {
         userDao = new UserDao();
     }
 
-    /*Tests for User findByEmailAndPassword(String email, String pwdHash)*/
-/*
-    @Test
-    void findByEmailAndPassword_ShouldReturnUserWithMatchingData() throws SQLException, DaoException {
-        User expectedUser = new User(1, "Jack", "Nicholson", "admin", "jack.nich@gmai.com", "1");
-
-        Connection connection = DBCPDataSource.getConnection();
-        userDao.setConnection(connection);
-        User actualUser = userDao.findByEmailAndPassword("jack.nich@gmai.com", "1");
-        connection.close();
-
-        assertEquals(expectedUser, actualUser);
-    }
-
-
-
-    @Test
-    void findByEmailAndPassword_ShouldReturnNullIfUserIsNotFound() throws SQLException, DaoException {
-        User expectedUser = null;
-        String validEmail = "jack.nich@gmai.com";
-        String invalidPassword = "6";
-        Connection connection = DBCPDataSource.getConnection();
-        userDao.setConnection(connection);
-        User actualUser = userDao.findByEmailAndPassword(validEmail, invalidPassword);
-        connection.close();
-
-        assertEquals(expectedUser, actualUser);
-    }
-
- */
-    /*end*/
-
-    /*Tests for List<User> findAll()*/
-    /*
     @Test
     @Order(1)
     void findAll_ShouldRetrieveAllUsersFromTableUsers() throws SQLException {
@@ -81,59 +45,10 @@ class UserDaoTest {
         assertEquals(expectedListSize, actualListSize);
     }
 
-     */
-    /*end*/
-
-    /*Tests for boolean create(User user)*/
-    /*
-   @Test
-    void create_ShouldIncreaseNumberOfStudentsInTableUserByOne_WhenSavedSuccessfully() throws SQLException, DaoException {
-        User userToSave = new User("New", "User", "user", "testemail@mail.co", "test");
-        Connection connection = DBCPDataSource.getConnection();
-        userDao.setConnection(connection);
-
-        int numberOfSavedUsersBeforeSaving = userDao.findAll().size();
-
-        userDao.create(userToSave);
-
-        int numberOfSavedUsersAfterSaving = userDao.findAll().size();
-
-        connection.close();
-
-        assertEquals(numberOfSavedUsersBeforeSaving, numberOfSavedUsersAfterSaving - 1);
-    }
-
-     */
-
-
-/*
-    @Test
-    void create_ShouldThrowDaoException_WhenUserToBeSavedDoesntHaveRole() throws SQLException, DaoException {
-        User userToSave = new User();
-        userToSave.setFirstName("John");
-        userToSave.setLastName("Adams");
-        userToSave.setEmail("testemail@mail.co");
-        userToSave.setPasswordHash("test");
-
-        Connection connection = DBCPDataSource.getConnection();
-        userDao.setConnection(connection);
-
-        connection.close();
-
-        assertThrows(DaoException.class, () -> {
-            userDao.create(userToSave);
-        });
-    }
-
- */
-    /*end*/
-
-    /*Tests for User findById(Long id)*/
-    /*
     @Test
     void findById_ShouldReturnUserWithMatchingId() throws SQLException, DaoException {
         Long userId = 1L;
-        User expectedUser = new User(userId, "Jack", "Nicholson", "admin", "jack.nich@gmai.com", "1");
+        User expectedUser = new User(userId, "Jack", "Nicholson", User.Role.ADMIN, "jack.nich@gmai.com", "1");
 
         Connection connection = DBCPDataSource.getConnection();
         userDao.setConnection(connection);
@@ -156,18 +71,87 @@ class UserDaoTest {
         assertEquals(expectedUser, actualUser);
     }
 
-     */
-    /*end*/
+    @Test
+    void findByEmailAndPassword_ShouldReturnUserWithMatchingData() throws SQLException, DaoException {
+        User expectedUser = new User(1, "Jack", "Nicholson", User.Role.ADMIN, "jack.nich@gmai.com", "1");
 
-    /*Tests for boolean update(User user)*/
-    /*
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+        User actualUser = userDao.findByEmailAndPassword("jack.nich@gmai.com", "1");
+        connection.close();
+
+        assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    void findByEmailAndPassword_ShouldReturnNullIfUserIsNotFound() throws SQLException, DaoException {
+        User expectedUser = null;
+        String validEmail = "jack.nich@gmai.com";
+        String invalidPassword = "6";
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+        User actualUser = userDao.findByEmailAndPassword(validEmail, invalidPassword);
+        connection.close();
+
+        assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    void findByEmailShouldReturnUser() throws SQLException {
+
+        String validEmail = "jack.nich@gmai.com";
+        User expectedUser = new User(1, "Jack", "Nicholson", User.Role.ADMIN, validEmail, "1");
+
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+        User actualUser = userDao.findByEmail(validEmail);
+        connection.close();
+        assertEquals(expectedUser, actualUser);
+
+    }
+
+    @Test
+    void create_ShouldIncreaseNumberOfStudentsInTableUserByOne_WhenSavedSuccessfully() throws SQLException, DaoException {
+        User userToSave = new User("New", "User", User.Role.USER, "testemail@mail.co", "test");
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+
+        int numberOfSavedUsersBeforeSaving = userDao.findAll().size();
+
+        userDao.create(userToSave);
+
+        int numberOfSavedUsersAfterSaving = userDao.findAll().size();
+
+        connection.close();
+
+        assertEquals(numberOfSavedUsersBeforeSaving, numberOfSavedUsersAfterSaving - 1);
+    }
+
+    @Test
+    void create_ShouldThrowDaoException_WhenUserToBeSavedDoesntHaveRole() throws SQLException, DaoException {
+        User userToSave = new User();
+        userToSave.setFirstName("John");
+        userToSave.setLastName("Adams");
+        userToSave.setEmail("testemail@mail.co");
+        userToSave.setPasswordHash("test");
+
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+
+        connection.close();
+
+        assertThrows(DaoException.class, () -> {
+            userDao.create(userToSave);
+        });
+    }
+
     @Test
     void update_ShouldSaveChangedDataInDatabase() throws SQLException {
         Long userId = 5l;
         String expectedChangedFirstName = "Changed Name";
         String expectedChangedEmail = "changed@mail.co";
 
-        User userToUpdate = new User(userId, expectedChangedFirstName, "Pachino", "admin", expectedChangedEmail, "5");
+        User userToUpdate = new User(userId, expectedChangedFirstName, "Pachino", User.Role.ADMIN, expectedChangedEmail, "5");
         Connection connection = DBCPDataSource.getConnection();
         userDao.setConnection(connection);
         userDao.update(userToUpdate);
@@ -178,11 +162,6 @@ class UserDaoTest {
         assertEquals(userToUpdate, actualUpdatedUser);
     }
 
-     */
-    /*end*/
-
-    /*Tests for boolean deleteById(Long id))*/
-    /*
     @Test
     void deleteById_ShouldRemoveUserWithIndicatedIdFromDatabase() throws SQLException {
         Long userIdToDelete = 4l;
@@ -208,10 +187,59 @@ class UserDaoTest {
         userDao.setConnection(connection);
 
         assertFalse(userDao.deleteById(invalidId));
+        connection.close();
+
     }
 
-     */
-    /*end*/
+    @Order(2)
+    @Test
+    void getActiveSubscriptionsIds_ShouldReturnListOfSubscribedPeriodicalIdsByUserId() throws SQLException {
 
+        Long userId = 2l;
+        int expectedSize = 10;
+
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+
+        List<Long> actualPeriodicalIds = userDao.getActiveSubscriptionsIds(userId);
+        assertEquals(actualPeriodicalIds.size(), expectedSize);
+
+        connection.close();
+
+    }
+
+    @Test
+    void removeSubscription_ShouldDeleteRowFromTable() throws SQLException {
+        long userId = 2l;
+        long periodicalsId = 11l;
+
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+
+        boolean isSubscribedBeforeRemoval = userDao.isSubscribedToPeriodical(userId, periodicalsId);
+        boolean isUnsubscribedSuccessfully = userDao.removeSubscription(userId, periodicalsId);
+        boolean isSubscribedAfterRemoval = userDao.isSubscribedToPeriodical(userId, periodicalsId);
+
+        connection.close();
+
+        assertAll(
+            () -> assertTrue(isSubscribedBeforeRemoval),
+            () -> assertTrue(isUnsubscribedSuccessfully),
+            () -> assertFalse(isSubscribedAfterRemoval)
+        );
+    }
+
+    @Test
+    void isSubscribedToPeriodical_ShouldReturnTrue_WhenUserIsSubscribedToPeriodicals() throws SQLException {
+        long userId = 2l;
+        long periodicalsId = 10;
+
+        Connection connection = DBCPDataSource.getConnection();
+        userDao.setConnection(connection);
+        boolean isSubscribed = userDao.isSubscribedToPeriodical(userId, periodicalsId);
+        connection.close();
+
+        assertTrue(isSubscribed);
+    }
 
 }

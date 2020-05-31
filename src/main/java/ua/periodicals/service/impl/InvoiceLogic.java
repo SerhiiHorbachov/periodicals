@@ -19,7 +19,6 @@ import ua.periodicals.model.Periodical;
 
 import java.util.List;
 
-
 public class InvoiceLogic {
 
     private static final Logger LOG = LoggerFactory.getLogger(InvoiceLogic.class);

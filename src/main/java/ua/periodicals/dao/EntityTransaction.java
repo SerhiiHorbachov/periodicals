@@ -1,5 +1,6 @@
 package ua.periodicals.dao;
 
+import ua.periodicals.database.ConnectionManager;
 import ua.periodicals.database.DBCPDataSource;
 import ua.periodicals.exception.DaoException;
 
@@ -7,10 +8,16 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class EntityTransaction {
+
+    ConnectionManager connectionManager;
     private Connection connection;
 
     public EntityTransaction() {
 
+    }
+
+    public EntityTransaction(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 
     public void begin(AbstractDao dao, AbstractDao... daos) {
