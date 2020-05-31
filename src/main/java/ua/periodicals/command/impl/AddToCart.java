@@ -6,6 +6,7 @@ import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Cart;
 import ua.periodicals.model.Periodical;
+import ua.periodicals.model.User;
 import ua.periodicals.service.impl.PeriodicalLogicImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,35 +28,31 @@ public class AddToCart implements ActionCommand {
         HttpSession session = request.getSession();
 
         PeriodicalLogicImpl periodicalLogic = new PeriodicalLogicImpl();
+        Long requestedPeriodicalId = Long.parseLong(request.getParameter(PERIODICAL_ID_REQUEST_PARAM));
+        User user = (User) session.getAttribute("user");
 
-        Periodical periodical = periodicalLogic.findById(Long.parseLong(request.getParameter(PERIODICAL_ID_REQUEST_PARAM)));
+
+        Periodical periodical = periodicalLogic.findById(requestedPeriodicalId);
 
         Cart cart = (Cart) session.getAttribute(CART_SESSION_ATTRIBUTE);
 
-        if (cart != null) {
+        if (periodicalLogic.isSubscribedToPeriodical(user.getId(), requestedPeriodicalId)
+            || itemIsInCart(cart, periodical)) {
 
-            if (cart.getCartItems().contains(periodical)) {
-                List<Periodical> periodicals = periodicalLogic.findAll();
+            List<Periodical> periodicals = periodicalLogic.findAll();
 
-                request.setAttribute("periodicals", periodicals);
+            request.setAttribute("periodicals", periodicals);
 
-                String message = "This item is already in the cart";
-                Long invalidId = Long.parseLong(request.getParameter("periodicalId"));
-                request.setAttribute("alreadyInCart", message);
-                request.setAttribute("invalidId", invalidId);
+            Long invalidId = Long.parseLong(request.getParameter("periodicalId"));
+            request.setAttribute("invalidId", invalidId);
 
-                next.setPage("/?page=" + request.getParameter("currentPage") + "&inv_id=" + invalidId);
-                next.setDispatchType("REDIRECT");
-
-            } else {
-                cart.addItem(periodical);
-                session.setAttribute("cart", cart);
-                next.setPage("/my/cart");
-                next.setDispatchType("REDIRECT");
-            }
+            next.setPage("/?page=" + request.getParameter("currentPage") + "&inv_id=" + invalidId);
+            next.setDispatchType("REDIRECT");
 
         } else {
-            cart = new Cart();
+            if (cart == null) {
+                cart = new Cart();
+            }
 
             cart.addItem(periodical);
             session.setAttribute("cart", cart);
@@ -65,4 +62,16 @@ public class AddToCart implements ActionCommand {
 
         return next;
     }
+
+    private boolean itemIsInCart(Cart cart, Periodical periodical) {
+        boolean isInCart = false;
+        if (cart != null) {
+            if (cart.getCartItems().contains(periodical)) {
+                isInCart = true;
+            }
+        }
+
+        return isInCart;
+    }
 }
+

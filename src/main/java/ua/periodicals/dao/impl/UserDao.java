@@ -29,10 +29,25 @@ public class UserDao extends AbstractUserDao {
         "UPDATE users SET first_name=?, last_name=?, role=?, email=?, password_hash=?  WHERE user_id=?";
     public static final String DELETE_USER_BY_ID_QUERY = "DELETE FROM users WHERE user_id=?";
     public static final String ADD_SUBSCRIPTION = "INSERT INTO users_periodicals(user_id, periodical_id) VALUES (?, ?)";
-    public static final String GET_ACTIVE_SUBSCRIPTIONS_BY_USER_ID_QUERY = "SELECT periodical_id from users_periodicals where user_id=?";
-
-    public static final String UNSUBSCRIBE_PERIODICAL_QUERY = "DELETE FROM users_periodicals WHERE user_id = ? AND periodical_id = ?";
-
+    public static final String GET_ACTIVE_SUBSCRIPTIONS_BY_USER_ID_QUERY = "SELECT\n" +
+        "    periodical_id \n" +
+        "from\n" +
+        "    users_periodicals \n" +
+        "where\n" +
+        "    user_id=?";
+    public static final String UNSUBSCRIBE_PERIODICAL_QUERY = "DELETE \n" +
+        "FROM\n" +
+        "    users_periodicals \n" +
+        "WHERE\n" +
+        "    user_id = ? \n" +
+        "    AND periodical_id = ?";
+    public static final String IS_USER_SUBSCRIBED_TO_PERIODICAL_QUERY = "SELECT\n" +
+        "    * \n" +
+        "FROM\n" +
+        "    users_periodicals \n" +
+        "WHERE\n" +
+        "    user_id=? \n" +
+        "    AND periodical_id =?";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDao.class);
 
@@ -265,6 +280,28 @@ public class UserDao extends AbstractUserDao {
         }
 
         return result > 0;
+    }
+
+    @Override
+    public boolean isSubscribedToPeriodical(long userId, long periodicalId) {
+        LOG.debug("Try to check if user id={} is subscribed to periodical id={}", userId, periodicalId);
+
+        boolean result = false;
+
+        try (PreparedStatement statement = connection.prepareStatement(IS_USER_SUBSCRIBED_TO_PERIODICAL_QUERY)) {
+            statement.setLong(1, userId);
+            statement.setLong(2, periodicalId);
+
+            ResultSet resultSet = statement.executeQuery();
+            result = resultSet.next();
+
+        } catch (SQLException e) {
+            LOG.error("Failed to check if user id={} is subscribed to periodical id={}", userId, periodicalId, e);
+
+            throw new DaoException("Failed to check if user id=" + userId + " is subscribed to periodical id=" + periodicalId, e);
+        }
+
+        return result;
     }
 
 

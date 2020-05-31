@@ -9,7 +9,6 @@ public class Cart extends Entity {
 
     private Map<Long, Periodical> cartItems = new HashMap<>();
 
-
     private int totalCount = 0;
     private long totalCost = 0;
 

@@ -11,11 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(filterName = "ErrorHandlerFilter")
+@WebFilter("/*")
 public class ErrorHandlerFilter implements Filter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EditPeriodicalView.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(ErrorHandlerFilter.class);
 
     public void destroy() {
     }
@@ -28,10 +27,13 @@ public class ErrorHandlerFilter implements Filter {
             chain.doFilter(req, resp);
         } catch (Throwable th) {
 
-            System.out.println(th);
+            System.out.println("Error cought!!!" + th);
             String requestedUrl = request.getRequestURI();
+
             LOG.error("Request " + requestedUrl + " failed: " + th.getMessage(), th);
-            RoutingUtils.forwardToPage("error.jsp", request, response);
+            request.setAttribute("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            request.setAttribute("errorMessage", th.getMessage());
+            RoutingUtils.forwardToPage("error/error.jsp", request, response);
         }
     }
 

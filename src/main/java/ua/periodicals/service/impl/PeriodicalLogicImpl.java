@@ -1,8 +1,11 @@
 package ua.periodicals.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
+import ua.periodicals.dao.impl.UserDao;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.exception.LogicException;
 import ua.periodicals.exception.ValidationException;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PeriodicalLogicImpl {
+    private static final Logger LOG = LoggerFactory.getLogger(PeriodicalLogicImpl.class);
 
     public List<Periodical> findAll() {
 
@@ -199,6 +203,38 @@ public class PeriodicalLogicImpl {
         }
 
         return result;
+    }
+
+    public boolean isSubscribedToPeriodical(long userId, long periodicalId) {
+        LOG.debug("Try to check if user id={} is subscribed to periodical id={}", userId, periodicalId);
+
+        boolean result = false;
+
+        UserDao userDao = new UserDao();
+        EntityTransaction transaction = new EntityTransaction();
+
+        try {
+            transaction.begin(userDao);
+
+            result = userDao.isSubscribedToPeriodical(userId, periodicalId);
+
+            transaction.commit();
+        } catch (DaoException e) {
+            LOG.error("Failed to end transaction.", e);
+            transaction.rollback();
+            throw new LogicException("Failed to perform transaction", e);
+        } finally {
+            try {
+                transaction.end();
+            } catch (DaoException e) {
+                LOG.error("Failed to end transaction.", e);
+                transaction.rollback();
+                throw new LogicException("Failed to end transaction", e);
+            }
+        }
+
+        return result;
+
     }
 
     private void validatePeriodical(Periodical periodical) {

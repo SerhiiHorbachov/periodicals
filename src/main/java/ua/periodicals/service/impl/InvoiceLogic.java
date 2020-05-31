@@ -201,5 +201,4 @@ public class InvoiceLogic {
         return result;
     }
 
-
 }

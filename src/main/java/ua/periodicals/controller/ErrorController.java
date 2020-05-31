@@ -16,6 +16,7 @@ public class ErrorController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RoutingUtils.forwardToPage("error.jsp", request, response);
+        request.setAttribute("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        RoutingUtils.forwardToPage("error/error.jsp", request, response);
     }
 }

@@ -62,6 +62,7 @@ public class ActionFactory {
         }
 
         LOG.debug("...Action defined: " + action);
+
         command = actions.get(action);
 
         return command;

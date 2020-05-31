@@ -20,7 +20,6 @@ CREATE TABLE periodicals
 );
 
 
-
 -- data
 INSERT INTO users(user_id, first_name, last_name, role, email, password_hash)
 VALUES (DEFAULT, 'Jack', 'Nicholson', 'admin', 'jack.nich@gmai.com', '1'),

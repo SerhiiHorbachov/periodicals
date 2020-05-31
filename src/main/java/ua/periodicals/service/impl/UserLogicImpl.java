@@ -80,32 +80,6 @@ public class UserLogicImpl {
         return user;
     }
 
-    public User findByEmail(String email) {
-
-        User user = null;
-
-        AbstractUserDao userDao = new UserDao();
-        EntityTransaction transaction = new EntityTransaction();
-
-        try {
-            transaction.begin(userDao);
-            user = userDao.findByEmail(email);
-            transaction.commit();
-        } catch (DaoException e) {
-            transaction.rollback();
-            throw new LogicException(e);
-        } finally {
-
-            try {
-                transaction.end();
-            } catch (DaoException e) {
-                throw new LogicException("Failed to end transaction", e);
-            }
-        }
-
-        return user;
-    }
-
     public boolean create(User user) {
 
         boolean isCreated = false;
@@ -204,7 +178,6 @@ public class UserLogicImpl {
 
         return result > 0;
     }
-
 
     private void validateUser(User user) {
         if (user.getFirstName().isEmpty() || user.getFirstName().isBlank()) {

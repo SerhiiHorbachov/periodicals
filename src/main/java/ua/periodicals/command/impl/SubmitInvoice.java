@@ -1,5 +1,7 @@
 package ua.periodicals.command.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.exception.LogicException;
@@ -11,9 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class SubmitInvoice implements ActionCommand {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SubmitInvoice.class);
+
+
     @Override
     public NextPage execute(HttpServletRequest request) {
-        System.out.println("[INFO]: >>SubmitInvoice");
+        LOG.debug("Try to show successful invoice submission view");
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
@@ -21,15 +27,9 @@ public class SubmitInvoice implements ActionCommand {
 
         InvoiceLogic invoiceLogic = new InvoiceLogic();
 
-
         invoiceLogic.submit(user.getId(), cart);
 
-        System.out.println("[INFO]: >>SubmitInvoice - invoice submitted");
-
         session.removeAttribute("cart");
-        String message = "Thank you, your invoice has been submitted and will be processed in the shortest time.";
-        request.setAttribute("submit_success", message);
-
 
         return new NextPage("invoice-success.jsp", "FORWARD");
     }

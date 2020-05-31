@@ -5,7 +5,6 @@
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="cart_messages"/>
 
-
 <div class="container">
     <h1><fmt:message key="msg.cart"/></h1>
 
@@ -72,9 +71,4 @@
 
     </c:if>
 
-    <%--    <c:if test="${requestScope.submit_success != null}">--%>
-    <%--        <div class="text-center">--%>
-    <%--                ${submit_success}--%>
-    <%--        </div>--%>
-    <%--    </c:if>--%>
 </div>

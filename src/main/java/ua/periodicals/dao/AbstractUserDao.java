@@ -17,4 +17,6 @@ public abstract class AbstractUserDao extends AbstractDao<User> {
 
     public abstract boolean removeSubscription(Long userId, Long periodicalId);
 
+    public abstract boolean isSubscribedToPeriodical(long userId, long periodicalId);
+
 }
