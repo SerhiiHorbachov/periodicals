@@ -43,7 +43,7 @@ class PeriodicalDaoTest {
         Connection connection = DBCPDataSource.getConnection();
         periodicalDao.setConnection(connection);
         long actualListSize = periodicalDao.findAll().size();
-        System.out.println(actualListSize);
+
         connection.close();
 
         assertEquals(expectedListSize, actualListSize);

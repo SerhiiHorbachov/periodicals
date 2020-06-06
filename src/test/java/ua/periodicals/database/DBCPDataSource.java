@@ -13,8 +13,6 @@ public class DBCPDataSource {
     private static final String DB_LOGIN = "sa";
     private static final String DB_PASS = "";
 
-//    DB_CLOSE_DELAY=-1
-
     static {
 
         ds.setUrl(DB_URL);

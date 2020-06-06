@@ -4,11 +4,22 @@
     <h1>Code: ${statusCode}</h1>
     <c:choose>
         <c:when test="${statusCode ==404}">
-            Requested resource not found
+
         </c:when>
         <c:otherwise>
             Try again alter
         </c:otherwise>
     </c:choose>
-    Message: ${errorMessage}
+
 </div>
+
+<c:choose>
+    <c:when test="${statusCode ==404}">
+        <div class="text-center">
+            <img src="https://media.giphy.com/media/VwoJkTfZAUBSU/giphy.gif" alt="not found">
+        </div>
+    </c:when>
+    <c:otherwise>
+        Try again alter
+    </c:otherwise>
+</c:choose>

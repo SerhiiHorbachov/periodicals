@@ -100,6 +100,7 @@ public class OrderItemsDao extends AbstractOrderItemsDao {
         return orderItems;
     }
 
+    @Override
     public List<Long> getPeriodicalIdsByInvoiceId(long invoiceId) {
         LOG.debug("Try to get periodicals ids by invoice id={}", invoiceId);
 
@@ -123,6 +124,5 @@ public class OrderItemsDao extends AbstractOrderItemsDao {
         return ids;
 
     }
-
-
+    
 }
