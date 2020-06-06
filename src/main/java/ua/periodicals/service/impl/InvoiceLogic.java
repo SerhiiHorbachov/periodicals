@@ -24,9 +24,13 @@ public class InvoiceLogic {
     private static final Logger LOG = LoggerFactory.getLogger(InvoiceLogic.class);
 
     public boolean submit(long userId, Cart cart) {
-        System.out.println(">>InvoiceLogic submit");
+        LOG.debug("Try to submit invoice, userId={}, cart: {}", userId, cart);
+
+
         boolean result = false;
+
         EntityTransaction transaction = new EntityTransaction();
+
         InvoiceDao invoiceDao = new InvoiceDao();
 
         OrderItemsDao orderItemsDao = new OrderItemsDao();
@@ -52,11 +56,14 @@ public class InvoiceLogic {
             System.out.println("[INFO] orderItems saved");
 
             result = true;
+
             transaction.commit();
         } catch (DaoException e) {
             transaction.rollback();
             throw new LogicException("Failed to perform transaction", e);
+
         } finally {
+
             try {
                 transaction.end();
             } catch (DaoException e) {

@@ -64,7 +64,9 @@ public class UserLogicImpl {
 
         try {
             transaction.begin(userDao);
+
             user = userDao.findById(id);
+
             transaction.commit();
         } catch (DaoException e) {
             transaction.rollback();

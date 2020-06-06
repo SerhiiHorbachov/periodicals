@@ -72,8 +72,8 @@ public class Invoice extends Entity {
         if (o == null || getClass() != o.getClass()) return false;
         Invoice invoice = (Invoice) o;
         return id == invoice.id &&
-                userId == invoice.userId &&
-                Objects.equals(createdAt, invoice.createdAt);
+            userId == invoice.userId &&
+            Objects.equals(createdAt, invoice.createdAt);
     }
 
     @Override
@@ -84,12 +84,12 @@ public class Invoice extends Entity {
     @Override
     public String toString() {
         return "\nInvoice{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", status=" + status +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+            "id=" + id +
+            ", userId=" + userId +
+            ", status=" + status +
+            ", createdAt=" + createdAt +
+            ", updatedAt=" + updatedAt +
+            '}';
     }
 
     public enum STATUS {
