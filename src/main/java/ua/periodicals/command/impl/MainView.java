@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Periodical;
-import ua.periodicals.service.impl.PeriodicalLogicImpl;
+import ua.periodicals.service.PeriodicalService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -22,7 +23,7 @@ public class MainView implements ActionCommand {
     public NextPage execute(HttpServletRequest request) {
         LOG.debug("Try to show main view, page={}", request.getParameter(PAGE_PARAM));
 
-        PeriodicalLogicImpl periodicalLogicImpl = new PeriodicalLogicImpl();
+        PeriodicalService periodicalServiceImpl = ServiceManager.getInstance().getPeriodicalService();
 
         int page = 1;
 
@@ -30,9 +31,9 @@ public class MainView implements ActionCommand {
             page = Integer.parseInt(request.getParameter(PAGE_PARAM));
         }
 
-        long totalPages = (long) Math.ceil(((double) periodicalLogicImpl.getCount() / ITEMS_PER_PAGE));
+        long totalPages = (long) Math.ceil(((double) periodicalServiceImpl.getCount() / ITEMS_PER_PAGE));
 
-        List<Periodical> periodicals = periodicalLogicImpl.getPerPage(page, ITEMS_PER_PAGE);
+        List<Periodical> periodicals = periodicalServiceImpl.getPerPage(page, ITEMS_PER_PAGE);
         request.setAttribute(PERIODICALS_ATTR, periodicals);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("activePage", page);

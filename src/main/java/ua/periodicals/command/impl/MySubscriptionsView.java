@@ -6,7 +6,8 @@ import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Periodical;
 import ua.periodicals.model.User;
-import ua.periodicals.service.impl.UserLogicImpl;
+import ua.periodicals.service.UserService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,7 +22,7 @@ public class MySubscriptionsView implements ActionCommand {
     public NextPage execute(HttpServletRequest request) {
         LOG.debug("Try to show subscriptions view");
 
-        UserLogicImpl userLogic = new UserLogicImpl();
+        UserService userLogic = ServiceManager.getInstance().getUserService();
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(USER_ATTR);
@@ -29,7 +30,7 @@ public class MySubscriptionsView implements ActionCommand {
         List<Periodical> subscriptions = userLogic.getActiveSubscriptions(user.getId());
 
         request.setAttribute("subscriptions", subscriptions);
-        
+
         return new NextPage("my_subscriptions.jsp", "FORWARD");
     }
 }

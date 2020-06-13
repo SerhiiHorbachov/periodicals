@@ -1,12 +1,23 @@
 package ua.periodicals.exception;
 
-public class DatabaseConnectionException extends Exception {
-    public DatabaseConnectionException(String errorMessage) {
-        super(errorMessage);
+public class DatabaseConnectionException extends RuntimeException {
+    public DatabaseConnectionException() {
+        super();
     }
 
-    public DatabaseConnectionException(String errorMessage, Throwable err) {
-        super(errorMessage, err);
+
+    public DatabaseConnectionException(String message) {
+        super(message);
+    }
+
+
+    public DatabaseConnectionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+
+    public DatabaseConnectionException(Throwable cause) {
+        super(cause);
     }
 
 }

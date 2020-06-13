@@ -5,7 +5,8 @@ import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.exception.DuplicateException;
 import ua.periodicals.model.User;
-import ua.periodicals.service.impl.UserLogicImpl;
+import ua.periodicals.service.UserService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,7 +16,7 @@ public class Register implements ActionCommand {
 
     @Override
     public NextPage execute(HttpServletRequest request) {
-        UserLogicImpl userLogic = new UserLogicImpl();
+        UserService userLogic = ServiceManager.getInstance().getUserService();
         NextPage next = new NextPage();
         boolean isSaved = false;
 

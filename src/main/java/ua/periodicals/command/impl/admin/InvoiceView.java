@@ -5,11 +5,11 @@ import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Cart;
 import ua.periodicals.model.Invoice;
 import ua.periodicals.model.User;
-import ua.periodicals.service.impl.InvoiceLogic;
-import ua.periodicals.service.impl.UserLogicImpl;
+import ua.periodicals.service.InvoiceService;
+import ua.periodicals.service.UserService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class InvoiceView implements ActionCommand {
 
@@ -18,7 +18,8 @@ public class InvoiceView implements ActionCommand {
         System.out.println("[INFO]: >>InvoiceEdit");
 
         Long invoiceId = Long.parseLong(request.getParameter("id"));
-        InvoiceLogic invoiceLogic = new InvoiceLogic();
+
+        InvoiceService invoiceLogic = ServiceManager.getInstance().getInvoiceService();
 
         Invoice invoice = invoiceLogic.findById(invoiceId);
         request.setAttribute("invoice", invoice);
@@ -26,7 +27,7 @@ public class InvoiceView implements ActionCommand {
         Cart cart = invoiceLogic.getInvoiceCart(invoiceId);
         request.setAttribute("cart", cart);
 
-        UserLogicImpl userLogic = new UserLogicImpl();
+        UserService userLogic = ServiceManager.getInstance().getUserService();
         User user = userLogic.findById(invoice.getUserId());
         request.setAttribute("user", user);
 

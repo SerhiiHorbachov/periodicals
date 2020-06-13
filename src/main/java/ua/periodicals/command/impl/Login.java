@@ -7,7 +7,8 @@ import ua.periodicals.command.NextPage;
 import ua.periodicals.exception.AuthenticationException;
 import ua.periodicals.exception.InvalidPasswordException;
 import ua.periodicals.model.User;
-import ua.periodicals.service.impl.UserLogicImpl;
+import ua.periodicals.service.UserService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -43,7 +44,7 @@ public class Login implements ActionCommand {
         String email = request.getParameter(EMAIL_PARAM).trim();
         String password = request.getParameter(PASSWORD_PARAM).trim();
 
-        UserLogicImpl userLogic = new UserLogicImpl();
+        UserService userLogic = ServiceManager.getInstance().getUserService();
         User user = null;
 
         try {

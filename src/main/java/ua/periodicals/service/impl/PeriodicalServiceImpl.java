@@ -6,35 +6,51 @@ import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
 import ua.periodicals.dao.impl.UserDao;
+import ua.periodicals.database.ConnectionManager;
+import ua.periodicals.database.ConnectionManagerImpl;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.exception.LogicException;
 import ua.periodicals.exception.ValidationException;
 import ua.periodicals.model.Periodical;
+import ua.periodicals.service.PeriodicalService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodicalLogicImpl {
-    private static final Logger LOG = LoggerFactory.getLogger(PeriodicalLogicImpl.class);
+class PeriodicalServiceImpl implements PeriodicalService {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(PeriodicalServiceImpl.class);
+
+    private ConnectionManager connectionManager;
+
+    public PeriodicalServiceImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     public List<Periodical> findAll() {
+        LOG.debug("Try to find all periodicals");
 
         List<Periodical> periodicals = new ArrayList<>();
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
+
             transaction.begin(periodicalDao);
             periodicals = periodicalDao.findAll();
             transaction.commit();
+
         } catch (DaoException e) {
+            LOG.error("Failed to get all periodicals");
             transaction.rollback();
             throw new LogicException("Failed to perform transaction", e);
         } finally {
+
             try {
                 transaction.end();
             } catch (DaoException e) {
+                LOG.error("Failed to complete transaction");
                 transaction.rollback();
                 throw new LogicException("Failed to end transaction", e);
             }
@@ -47,7 +63,7 @@ public class PeriodicalLogicImpl {
         Long count = null;
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(periodicalDao);
@@ -73,7 +89,7 @@ public class PeriodicalLogicImpl {
         List<Periodical> periodicals = new ArrayList<>();
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         int start = page;
 
@@ -106,7 +122,7 @@ public class PeriodicalLogicImpl {
         Periodical periodical = null;
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(periodicalDao);
@@ -134,7 +150,7 @@ public class PeriodicalLogicImpl {
         validatePeriodical(periodical);
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(periodicalDao);
@@ -159,7 +175,7 @@ public class PeriodicalLogicImpl {
         boolean result = false;
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(periodicalDao);
@@ -184,7 +200,7 @@ public class PeriodicalLogicImpl {
         boolean result = false;
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(periodicalDao);
@@ -211,7 +227,7 @@ public class PeriodicalLogicImpl {
         boolean result = false;
 
         UserDao userDao = new UserDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(userDao);

@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Periodical;
-import ua.periodicals.service.impl.PeriodicalLogicImpl;
+import ua.periodicals.service.PeriodicalService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,10 +21,10 @@ public class EditPeriodicalView implements ActionCommand {
     public NextPage execute(HttpServletRequest request) {
         LOG.debug("Try to show edit periodical view, periodicalId={}", request.getParameter("id"));
 
-        PeriodicalLogicImpl periodicalLogicImpl = new PeriodicalLogicImpl();
+        PeriodicalService periodicalServiceImpl = ServiceManager.getInstance().getPeriodicalService();
 
         Long id = Long.parseLong(request.getParameter(PERIODICAL_ID_PARAM));
-        Periodical periodical = periodicalLogicImpl.findById(id);
+        Periodical periodical = periodicalServiceImpl.findById(id);
 
         request.setAttribute(PERIODICAL_ATTR, periodical);
 

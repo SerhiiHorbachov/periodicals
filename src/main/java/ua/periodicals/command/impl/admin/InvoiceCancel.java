@@ -3,7 +3,8 @@ package ua.periodicals.command.impl.admin;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Invoice;
-import ua.periodicals.service.impl.InvoiceLogic;
+import ua.periodicals.service.InvoiceService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +14,7 @@ public class InvoiceCancel implements ActionCommand {
         System.out.println("[INFO] >>InvoiceCancel:" + request.getParameter("id"));
 
         Long invoiceId = Long.parseLong(request.getParameter("id"));
-        InvoiceLogic invoiceLogic = new InvoiceLogic();
+        InvoiceService invoiceLogic = ServiceManager.getInstance().getInvoiceService();
 
         Invoice invoice = invoiceLogic.findById(invoiceId);
         System.out.println("Invoice: " + invoice);

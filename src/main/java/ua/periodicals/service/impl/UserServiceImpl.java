@@ -3,29 +3,37 @@ package ua.periodicals.service.impl;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.periodicals.command.impl.AddToCart;
 import ua.periodicals.dao.AbstractUserDao;
 import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
 import ua.periodicals.dao.impl.UserDao;
+import ua.periodicals.database.ConnectionManager;
+import ua.periodicals.database.ConnectionManagerImpl;
 import ua.periodicals.exception.*;
 import ua.periodicals.model.Periodical;
 import ua.periodicals.model.User;
+import ua.periodicals.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserLogicImpl {
+class UserServiceImpl implements UserService {
     private final static String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{6,20})";
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserLogicImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private ConnectionManager connectionManager;
+
+    public UserServiceImpl(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+    }
 
     public User authenticate(String email, String password) throws AuthenticationException, InvalidPasswordException {
 
         User user;
 
         AbstractUserDao userDao = new UserDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(userDao);
@@ -60,7 +68,7 @@ public class UserLogicImpl {
         User user;
 
         AbstractUserDao userDao = new UserDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(userDao);
@@ -89,7 +97,7 @@ public class UserLogicImpl {
         validateUser(user);
 
         AbstractUserDao userDao = new UserDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(userDao);
@@ -123,7 +131,7 @@ public class UserLogicImpl {
 
         AbstractUserDao userDao = new UserDao();
         PeriodicalDao periodicalDao = new PeriodicalDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(userDao, periodicalDao);
@@ -157,7 +165,7 @@ public class UserLogicImpl {
         int result = 0;
 
         AbstractUserDao userDao = new UserDao();
-        EntityTransaction transaction = new EntityTransaction();
+        EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
             transaction.begin(userDao);

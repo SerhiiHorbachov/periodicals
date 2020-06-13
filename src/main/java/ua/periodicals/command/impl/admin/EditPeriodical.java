@@ -6,7 +6,8 @@ import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.exception.ValidationException;
 import ua.periodicals.model.Periodical;
-import ua.periodicals.service.impl.PeriodicalLogicImpl;
+import ua.periodicals.service.PeriodicalService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ResourceBundle;
@@ -33,7 +34,8 @@ public class EditPeriodical implements ActionCommand {
 
         ResourceBundle errorResourceBundle = ResourceBundle.getBundle(ERROR_BUNDLE);
         NextPage next = new NextPage();
-        PeriodicalLogicImpl periodicalLogic = new PeriodicalLogicImpl();
+        PeriodicalService periodicalLogic = ServiceManager.getInstance().getPeriodicalService();
+
 
         if (request.getParameter(PERIODICAL_PRICE_PARAM).isEmpty() ||
             request.getParameter(PERIODICAL_NAME_PARAM).isEmpty()) {

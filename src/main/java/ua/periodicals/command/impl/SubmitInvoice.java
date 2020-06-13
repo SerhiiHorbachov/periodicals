@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
-import ua.periodicals.exception.LogicException;
 import ua.periodicals.model.Cart;
 import ua.periodicals.model.User;
-import ua.periodicals.service.impl.InvoiceLogic;
+import ua.periodicals.service.InvoiceService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpSession;
 public class SubmitInvoice implements ActionCommand {
 
     private static final Logger LOG = LoggerFactory.getLogger(SubmitInvoice.class);
-
 
     @Override
     public NextPage execute(HttpServletRequest request) {
@@ -25,7 +24,7 @@ public class SubmitInvoice implements ActionCommand {
         User user = (User) session.getAttribute("user");
         Cart cart = (Cart) session.getAttribute("cart");
 
-        InvoiceLogic invoiceLogic = new InvoiceLogic();
+        InvoiceService invoiceLogic = ServiceManager.getInstance().getInvoiceService();
 
         invoiceLogic.submit(user.getId(), cart);
 

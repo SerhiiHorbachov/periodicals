@@ -191,18 +191,19 @@ class UserDaoTest {
 
     }
 
+    @Disabled
     @Order(2)
     @Test
     void getActiveSubscriptionsIds_ShouldReturnListOfSubscribedPeriodicalIdsByUserId() throws SQLException {
 
         Long userId = 2l;
-        int expectedSize = 10;
+        long expectedSize = 10;
 
         Connection connection = DBCPDataSource.getConnection();
         userDao.setConnection(connection);
 
         List<Long> actualPeriodicalIds = userDao.getActiveSubscriptionsIds(userId);
-        assertEquals(actualPeriodicalIds.size(), expectedSize);
+        assertEquals(expectedSize, actualPeriodicalIds.size());
 
         connection.close();
 

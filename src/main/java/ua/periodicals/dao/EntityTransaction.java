@@ -9,25 +9,16 @@ import java.sql.SQLException;
 
 public class EntityTransaction {
 
-    ConnectionManager connectionManager;
     private Connection connection;
 
-    public EntityTransaction() {
-
-    }
-
-    public EntityTransaction(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
+    public EntityTransaction(Connection connection) {
+        this.connection = connection;
     }
 
     public void begin(AbstractDao dao, AbstractDao... daos) {
 
         if (connection == null) {
-            try {
-                connection = DBCPDataSource.getConnection();
-            } catch (SQLException e) {
-                throw new DaoException("Database connection wasn't established. ", e);
-            }
+            throw new DaoException("Database connection wasn't established.");
         }
 
         try {

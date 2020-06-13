@@ -3,9 +3,8 @@ package ua.periodicals.command.impl.admin;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Invoice;
-import ua.periodicals.model.Periodical;
-import ua.periodicals.service.impl.InvoiceLogic;
-import ua.periodicals.service.impl.PeriodicalLogicImpl;
+import ua.periodicals.service.InvoiceService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -16,7 +15,7 @@ public class InvoicesView implements ActionCommand {
     public NextPage execute(HttpServletRequest request) {
         System.out.println("[INFO]: >>InvoicesView");
 
-        InvoiceLogic invoiceLogic = new InvoiceLogic();
+        InvoiceService invoiceLogic = ServiceManager.getInstance().getInvoiceService();
 
         List<Invoice> inProgressInvoices = invoiceLogic.getInProgress();
         System.out.println(inProgressInvoices);

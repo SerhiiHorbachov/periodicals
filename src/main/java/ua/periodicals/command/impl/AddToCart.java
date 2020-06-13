@@ -7,7 +7,8 @@ import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Cart;
 import ua.periodicals.model.Periodical;
 import ua.periodicals.model.User;
-import ua.periodicals.service.impl.PeriodicalLogicImpl;
+import ua.periodicals.service.PeriodicalService;
+import ua.periodicals.service.impl.ServiceManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -27,7 +28,7 @@ public class AddToCart implements ActionCommand {
         NextPage next = new NextPage();
         HttpSession session = request.getSession();
 
-        PeriodicalLogicImpl periodicalLogic = new PeriodicalLogicImpl();
+        PeriodicalService periodicalLogic = ServiceManager.getInstance().getPeriodicalService();
         Long requestedPeriodicalId = Long.parseLong(request.getParameter(PERIODICAL_ID_REQUEST_PARAM));
         User user = (User) session.getAttribute("user");
 
