@@ -1,12 +1,6 @@
 package ua.periodicals.service.impl;
 
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import ua.periodicals.dao.impl.InvoiceDao;
-import ua.periodicals.dao.impl.OrderItemsDao;
-import ua.periodicals.database.ConnectionManager;
 
 import ua.periodicals.database.ConnectionManagerImpl;
 import ua.periodicals.database.DBCPDataSource;
