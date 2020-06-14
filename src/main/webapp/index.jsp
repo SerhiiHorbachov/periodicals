@@ -1,5 +1,8 @@
 <html>
 <body>
-<h2>Hello World!</h2>
+<body>
+<jsp:forward page="/main"/>
+<h1>INDEX PAGE PERIODICALS</h1>
+</body>
 </body>
 </html>
