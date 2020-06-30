@@ -5,14 +5,16 @@
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="registration_messages"/>
 
-<form action="/register" method="post" class="main-form needs-validation" novalidate>
-    
+<form action="${pageContext.request.contextPath}/register" method="post"
+      class="main-form needs-validation" novalidate>
+
     <div class="alert alert-warning">
         ${emailAlreadyTakenMessage}
         ${invalidPasswordPatternMessage}
         ${invalidEmailPatternMessage}
 
     </div>
+
     <div class="form-group">
         <label for="fname"><fmt:message key="msg.first_name"/></label>
         <input type="text" id="fname" name="fname" class="form-control" required>

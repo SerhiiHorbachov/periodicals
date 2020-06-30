@@ -109,7 +109,6 @@ class InvoiceServiceImplTest {
 
         Invoice invoiceAfterUpdate = invoiceService.findById(invoiceId);
 
-
         assertAll(
             () -> assertEquals(invoiceId, invoiceToBeUpdated.getId()),
             () -> assertEquals(expectedStatusBeforeUpdate, Invoice.STATUS.IN_PROGRESS),

@@ -1,13 +1,15 @@
 package ua.periodicals.command;
 
+import ua.periodicals.util.DispatchType;
+
 public class NextPage {
     String page;
-    String dispatchType;
+    DispatchType dispatchType;
 
     public NextPage() {
     }
 
-    public NextPage(String page, String dispatchType) {
+    public NextPage(String page, DispatchType dispatchType) {
         this.page = page;
         this.dispatchType = dispatchType;
     }
@@ -20,25 +22,19 @@ public class NextPage {
         this.page = page;
     }
 
-    public String getDispatchType() {
+    public DispatchType getDispatchType() {
         return dispatchType;
     }
 
-    public void setDispatchType(String dispatchType) {
+    public void setDispatchType(DispatchType dispatchType) {
         this.dispatchType = dispatchType;
     }
-
-    public enum DispatchType {
-        FORWARD,
-        REDIRECT
-    }
-
 
     @Override
     public String toString() {
         return "NextPage{" +
-                "page='" + page + '\'' +
-                ", dispatchType='" + dispatchType + '\'' +
-                '}';
+            "page='" + page + '\'' +
+            ", dispatchType='" + dispatchType + '\'' +
+            '}';
     }
 }

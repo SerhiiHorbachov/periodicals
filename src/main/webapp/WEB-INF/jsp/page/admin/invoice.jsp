@@ -89,18 +89,15 @@
     <c:if test="${requestScope.invoice.status.toString().equals('IN_PROGRESS')}">
         <div class="row">
 
-            <form <c:url value="${pageContext.request.contextPath}/admin/invoices" var="url"/>
-
-                    action="${url}" class="mr-auto" method="post">
+            <form action="${pageContext.request.contextPath}/admin/invoices" class="mr-auto"
+                  method="post">
                 <input type="hidden" name="command" value="cancel">
                 <input type="hidden" name="id" value="${requestScope.invoice.id}">
                 <input type="submit" class="btn btn-outline-danger" value="Cancel">
             </form>
 
-            <form
-                    <c:url value="${pageContext.request.contextPath}/admin/invoices" var="url"/>
-
-                    action="${url}" class="ml-auto" method="post">
+            <form action="${pageContext.request.contextPath}/admin/invoices" class="ml-auto"
+                  method="post">
                 <input type="hidden" name="command" value="approve">
                 <input type="hidden" name="id" value="${requestScope.invoice.id}">
                 <input type="submit" class="btn btn-outline-info" value="Approve">

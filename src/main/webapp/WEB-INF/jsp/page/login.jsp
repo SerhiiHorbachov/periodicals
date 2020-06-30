@@ -1,12 +1,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="login_messages"/>
 
 <div class="mt-5">
-    <form action="/login" method="post" class="main-form needs-validation" novalidate>
+    <form action="${pageContext.request.contextPath}/login" method="post" class="main-form needs-validation" novalidate>
         <c:if test="${authenticationErrorMessage != null}">
             <div class="alert alert-warning">
                     ${authenticationErrorMessage}

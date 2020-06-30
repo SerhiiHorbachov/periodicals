@@ -3,6 +3,7 @@ package ua.periodicals.controller;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.command.factory.ActionFactory;
+import ua.periodicals.util.DispatchType;
 import ua.periodicals.util.RoutingUtils;
 
 import javax.servlet.ServletException;
@@ -12,21 +13,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static ua.periodicals.util.Pages.*;
+
 @WebServlet(
     urlPatterns = {
-        "/main",
-        "/admin/periodicals",
-        "/admin/invoices",
-        "/admin/new-periodical",
-        "/admin/edit-periodical",
-        "/admin/invoices/in_progress",
-        "/admin/invoices/view",
-        "/my/cart",
-        "/my/subscriptions",
-        "/my/add-to-cart",
-        "/register",
-        "/login",
-        "/logout"
+        MAIN_PATH,
+        ADMIN_PERIODICALS_PATH,
+        ADMIN_INVOICES_PATH,
+        ADMIN_NEW_PERIODICAL_PATH,
+        ADMIN_EDIT_PERIODICAL_PATH,
+        ADMIN_INVOICES_IN_PROGRESS_PATH,
+        ADMIN_INVOICES_VIEW_PATH,
+        MY_CART_PATH,
+        MY_SUBSCRIPTIONS_PATH,
+        ADD_TO_CART_PATH,
+        REGISTER_PATH,
+        LOGIN_PATH,
+        LOGOUT_PATH
     }
 
 )
@@ -47,9 +50,9 @@ public class FrontController extends HttpServlet {
 
         nextPage = command.execute(request);
 
-        if (nextPage.getDispatchType().equals("FORWARD")) {
+        if (nextPage.getDispatchType() == DispatchType.FORWARD) {
             RoutingUtils.forwardToPage(nextPage.getPage(), request, response);
-        } else if (nextPage.getDispatchType().equals("REDIRECT")) {
+        } else if (nextPage.getDispatchType() == DispatchType.REDIRECT) {
             RoutingUtils.redirect(nextPage.getPage(), request, response);
         }
 

@@ -7,23 +7,26 @@ import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Periodical;
 import ua.periodicals.service.PeriodicalService;
 import ua.periodicals.service.impl.ServiceManager;
+import ua.periodicals.util.DispatchType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+import static ua.periodicals.util.AttributeNames.*;
+import static ua.periodicals.util.Pages.ADMIN_PERIODICALS_PAGE;
+
 public class ListPeriodicals implements ActionCommand {
+    private static final Logger LOG = LoggerFactory.getLogger(ListPeriodicals.class);
 
     private static final int ITEMS_PER_PAGE = 10;
-    private static final String PERIODICALS_ATTR = "periodicals";
-    private static final String PAGE_PARAM = "page";
 
-    private static final Logger LOG = LoggerFactory.getLogger(ListPeriodicals.class);
+    PeriodicalService periodicalService;
 
     @Override
     public NextPage execute(HttpServletRequest request) {
         LOG.debug("Try to show main view, page={}", request.getParameter(PAGE_PARAM));
 
-        PeriodicalService periodicalServiceImpl = ServiceManager.getInstance().getPeriodicalService();
+        periodicalService = ServiceManager.getInstance().getPeriodicalService();
 
         int page = 1;
 
@@ -31,15 +34,15 @@ public class ListPeriodicals implements ActionCommand {
             page = Integer.parseInt(request.getParameter(PAGE_PARAM));
         }
 
-        List<Periodical> periodicals = periodicalServiceImpl.getPerPage(page, ITEMS_PER_PAGE);
+        List<Periodical> periodicals = periodicalService.getPerPage(page, ITEMS_PER_PAGE);
 
-        long totalPages = (long) Math.ceil(((double) periodicalServiceImpl.getCount() / ITEMS_PER_PAGE));
+        long totalPages = (long) Math.ceil(((double) periodicalService.getCount() / ITEMS_PER_PAGE));
 
         request.setAttribute(PERIODICALS_ATTR, periodicals);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("activePage", page);
+        request.setAttribute(TOTAL_PAGES_ATTR, totalPages);
+        request.setAttribute(ACTIVE_PAGE_ATTR, page);
 
-        return new NextPage("admin/periodicals.jsp", "FORWARD");
+        return new NextPage(ADMIN_PERIODICALS_PAGE, DispatchType.FORWARD);
 
     }
 }

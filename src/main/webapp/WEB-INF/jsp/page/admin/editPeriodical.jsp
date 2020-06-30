@@ -9,7 +9,7 @@
     <hr>
     <a href="${pageContext.request.contextPath}/admin/periodicals">Back to List</a>
 
-    <form action="/admin/edit-periodical" method="POST" class="needs-validation" novalidate>
+    <form action="${pageContext.request.contextPath}/admin/edit-periodical" method="POST" class="needs-validation" novalidate>
         <c:if test="${validationMsg != null}">
             <div class="alert alert-warning">
                     ${validationMsg}

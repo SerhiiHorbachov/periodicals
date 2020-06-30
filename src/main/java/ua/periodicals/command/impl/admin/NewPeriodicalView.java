@@ -4,8 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
+import ua.periodicals.util.DispatchType;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static ua.periodicals.util.Pages.ADMIN_NEW_PERIODICAL_PAGE;
 
 public class NewPeriodicalView implements ActionCommand {
 
@@ -14,6 +17,6 @@ public class NewPeriodicalView implements ActionCommand {
     @Override
     public NextPage execute(HttpServletRequest request) {
         LOG.debug("Try to forward to add new periodical view");
-        return new NextPage("admin/newPeriodical.jsp", "FORWARD");
+        return new NextPage(ADMIN_NEW_PERIODICAL_PAGE, DispatchType.FORWARD);
     }
 }

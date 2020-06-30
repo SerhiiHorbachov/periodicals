@@ -4,7 +4,7 @@
 
 <div class="container">
     <input type="button" value="Add Periodical"
-           onclick="window.location.href='/admin/new-periodical'; return false;"
+           onclick="window.location.href='${pageContext.request.getContextPath()}/admin/new-periodical'; return false;"
            class="btn btn-info"
     />
     <hr>
@@ -34,7 +34,7 @@
                     </div>
                     <span>   </span>
                     <div>
-                        <form action="/admin/periodicals" method="post" class="d-inline">
+                        <form action="${pageContext.request.getContextPath()}/admin/periodicals" method="post" class="d-inline">
                             <input type="hidden" name="command" value="delete">
                             <input type="hidden" name="periodicalId" value="${periodical.id}">
                             <button type="submit" class="btn btn-link"

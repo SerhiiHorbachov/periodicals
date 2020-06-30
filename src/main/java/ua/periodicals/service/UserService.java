@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     User authenticate(String email, String password);
 
-    User findById(Long id);
+    User findById(long id);
 
     boolean create(User user);
 

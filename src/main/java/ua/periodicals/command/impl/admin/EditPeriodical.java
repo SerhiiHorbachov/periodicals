@@ -8,21 +8,22 @@ import ua.periodicals.exception.ValidationException;
 import ua.periodicals.model.Periodical;
 import ua.periodicals.service.PeriodicalService;
 import ua.periodicals.service.impl.ServiceManager;
+import ua.periodicals.util.DispatchType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ResourceBundle;
 
+import static ua.periodicals.util.AttributeNames.*;
+import static ua.periodicals.util.Pages.ADMIN_EDIT_PERIODICAL_PAGE;
+import static ua.periodicals.util.Pages.ADMIN_PERIODICALS_PATH;
+
 public class EditPeriodical implements ActionCommand {
+    private static final Logger LOG = LoggerFactory.getLogger(EditPeriodicalView.class);
 
     private static final String ERROR_BUNDLE = "error_messages";
     private static final String PERIODICAL_VALIDATION_MSG_KEY = "msg.periodical_validation";
-    private static final String PERIODICAL_NAME_PARAM = "name";
-    private static final String PERIODICAL_ID_PARAM = "periodicalId";
-    private static final String PERIODICAL_PRICE_PARAM = "price";
-    private static final String PERIODICAL_DESCRIPTION_PARAM = "description";
-    private static final String PERIODICAL_VALIDATION_MESSAGE_ATTR = "validationMsg";
 
-    private static final Logger LOG = LoggerFactory.getLogger(EditPeriodicalView.class);
+    PeriodicalService periodicalService;
 
     @Override
     public NextPage execute(HttpServletRequest request) {
@@ -34,16 +35,15 @@ public class EditPeriodical implements ActionCommand {
 
         ResourceBundle errorResourceBundle = ResourceBundle.getBundle(ERROR_BUNDLE);
         NextPage next = new NextPage();
-        PeriodicalService periodicalLogic = ServiceManager.getInstance().getPeriodicalService();
-
+        periodicalService = ServiceManager.getInstance().getPeriodicalService();
 
         if (request.getParameter(PERIODICAL_PRICE_PARAM).isEmpty() ||
             request.getParameter(PERIODICAL_NAME_PARAM).isEmpty()) {
-            LOG.info("Initial param validation failed, returning message to user.");
+            LOG.warn("Initial param validation failed, returning message to user.");
 
             request.setAttribute(PERIODICAL_VALIDATION_MESSAGE_ATTR, errorResourceBundle.getString(PERIODICAL_VALIDATION_MSG_KEY));
-            next.setPage("admin/editPeriodical.jsp");
-            next.setDispatchType("FORWARD");
+            next.setPage(ADMIN_EDIT_PERIODICAL_PAGE);
+            next.setDispatchType(DispatchType.FORWARD);
 
         } else {
             LOG.debug("initial validation passed");
@@ -61,16 +61,15 @@ public class EditPeriodical implements ActionCommand {
 
             try {
                 LOG.debug("Updating periodical in database");
-
-                periodicalLogic.update(periodical);
+                periodicalService.update(periodical);
             } catch (ValidationException e) {
                 request.setAttribute(PERIODICAL_VALIDATION_MESSAGE_ATTR, errorResourceBundle.getString(PERIODICAL_VALIDATION_MSG_KEY));
-                next.setPage("admin/editPeriodical.jsp");
-                next.setDispatchType("FORWARD");
+                next.setPage(ADMIN_EDIT_PERIODICAL_PAGE);
+                next.setDispatchType(DispatchType.FORWARD);
             }
 
-            next.setPage("/admin/periodicals");
-            next.setDispatchType("REDIRECT");
+            next.setPage(ADMIN_PERIODICALS_PATH);
+            next.setDispatchType(DispatchType.REDIRECT);
 
         }
 

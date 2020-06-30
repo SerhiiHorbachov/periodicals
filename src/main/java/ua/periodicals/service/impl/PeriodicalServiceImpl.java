@@ -7,7 +7,6 @@ import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
 import ua.periodicals.dao.impl.UserDao;
 import ua.periodicals.database.ConnectionManager;
-import ua.periodicals.database.ConnectionManagerImpl;
 import ua.periodicals.exception.DaoException;
 import ua.periodicals.exception.LogicException;
 import ua.periodicals.exception.ValidationException;
@@ -60,7 +59,7 @@ class PeriodicalServiceImpl implements PeriodicalService {
     }
 
     public Long getCount() {
-        Long count = null;
+        Long count;
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
@@ -86,7 +85,7 @@ class PeriodicalServiceImpl implements PeriodicalService {
 
     public List<Periodical> getPerPage(int page, int total) {
 
-        List<Periodical> periodicals = new ArrayList<>();
+        List<Periodical> periodicals;
 
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
@@ -115,7 +114,6 @@ class PeriodicalServiceImpl implements PeriodicalService {
 
         return periodicals;
     }
-
 
     public Periodical findById(long id) {
 
