@@ -6,17 +6,26 @@
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="header_messages"/>
 
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a href="/" class="navbar-brand">Subscriby</a>
+
+        <c:choose>
+            <c:when test="${sessionScope.role.equals('ADMIN')}">
+                <a href="${pageContext.request.getContextPath()}/admin/periodicals"
+                   class="navbar-brand">Subscriby</a>
+            </c:when>
+            <c:otherwise>
+                <a href="${pageContext.request.getContextPath()}/" class="navbar-brand">Subscriby</a>
+            </c:otherwise>
+        </c:choose>
 
         <div class="collapse navbar-collapse">
             <c:choose>
                 <c:when test="${sessionScope.role != null}">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item"><a href="/my/subscriptions"
-                                                class="nav-link"><fmt:message
+                        <li class="nav-item"><a
+                                href="${pageContext.request.getContextPath()}/my/subscriptions"
+                                class="nav-link"><fmt:message
                                 key="msg.my_subscriptions"/></a></li>
                     </ul>
                 </c:when>
@@ -56,16 +65,21 @@
 
                 <c:choose>
                     <c:when test="${sessionScope.role != null}">
-                        <li class="nav-item"><a href="/my/cart" class="nav-link"><fmt:message
+                        <li class="nav-item"><a
+                                href="${pageContext.request.getContextPath()}/my/cart"
+                                class="nav-link"><fmt:message
                                 key="msg.cart"/></a></li>
                         <li class="nav-item"><a href="#"
                                                 class="nav-link">${sessionScope.user.email}</a>
                         </li>
-                        <li class="nav-item"><a href="/logout" class="nav-link"><fmt:message
+                        <li class="nav-item"><a
+                                href="${pageContext.request.getContextPath()}/logout"
+                                class="nav-link"><fmt:message
                                 key="msg.logout"/></a></li>
                     </c:when>
                     <c:otherwise>
-                        <li class="nav-item"><a href="/login" class="nav-link"><fmt:message
+                        <li class="nav-item"><a href="${pageContext.request.getContextPath()}/login"
+                                                class="nav-link"><fmt:message
                                 key="msg.login"/> </a></li>
                     </c:otherwise>
                 </c:choose>
@@ -74,6 +88,3 @@
         </div>
     </div>
 </nav>
-
-
-

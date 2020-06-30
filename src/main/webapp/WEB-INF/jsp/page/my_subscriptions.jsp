@@ -27,7 +27,7 @@
                             <span class="term">/<fmt:message key="msg.month"/></span>
                         </h6>
 
-                        <form action="/my/subscriptions" method="post">
+                        <form action="${pageContext.request.contextPath}/my/subscriptions" method="post">
                             <input type="hidden" name="periodicalId" value="${periodical.id}">
                             <input type="hidden" name="command" value="unsubscribe">
                             <input type="hidden" name="currentPage"

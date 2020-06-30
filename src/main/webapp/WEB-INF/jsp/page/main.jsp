@@ -23,7 +23,7 @@
                             <span class="term">/<fmt:message key="msg.month"/></span>
                         </h6>
 
-                        <form action="/main" method="post">
+                        <form action="${pageContext.request.contextPath}/main" method="post">
                             <input type="hidden" name="periodicalId" value="${periodical.id}">
                             <input type="hidden" name="command" value="add-to-cart">
                             <input type="hidden" name="currentPage"

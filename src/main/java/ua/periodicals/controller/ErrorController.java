@@ -16,7 +16,7 @@ public class ErrorController extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        request.setAttribute("statusCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         request.setAttribute("statusCode", statusCode);
 

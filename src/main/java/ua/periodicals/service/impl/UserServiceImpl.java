@@ -8,7 +8,6 @@ import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
 import ua.periodicals.dao.impl.UserDao;
 import ua.periodicals.database.ConnectionManager;
-import ua.periodicals.database.ConnectionManagerImpl;
 import ua.periodicals.exception.*;
 import ua.periodicals.model.Periodical;
 import ua.periodicals.model.User;
@@ -17,7 +16,7 @@ import ua.periodicals.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 
-class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
     private final static String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{6,20})";
 
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -32,7 +31,7 @@ class UserServiceImpl implements UserService {
 
         User user;
 
-        AbstractUserDao userDao = new UserDao();
+        UserDao userDao = new UserDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -63,7 +62,7 @@ class UserServiceImpl implements UserService {
 
     }
 
-    public User findById(Long id) {
+    public User findById(long id) {
 
         User user;
 

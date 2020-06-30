@@ -1,26 +1,32 @@
 package ua.periodicals.command.impl.admin;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.periodicals.command.ActionCommand;
 import ua.periodicals.command.NextPage;
 import ua.periodicals.model.Invoice;
 import ua.periodicals.service.InvoiceService;
 import ua.periodicals.service.impl.ServiceManager;
+import ua.periodicals.util.DispatchType;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static ua.periodicals.util.Pages.ADMIN_INVOICES_VIEW_PATH;
+
 public class InvoiceCancel implements ActionCommand {
+    private static final Logger LOG = LoggerFactory.getLogger(InvoiceCancel.class);
+
+    InvoiceService invoiceLogic;
+
     @Override
     public NextPage execute(HttpServletRequest request) {
-        System.out.println("[INFO] >>InvoiceCancel:" + request.getParameter("id"));
+        LOG.debug("Try to cancel invoice, id={}", request.getParameter("id"));
 
         Long invoiceId = Long.parseLong(request.getParameter("id"));
-        InvoiceService invoiceLogic = ServiceManager.getInstance().getInvoiceService();
-
-        Invoice invoice = invoiceLogic.findById(invoiceId);
-        System.out.println("Invoice: " + invoice);
+        invoiceLogic = ServiceManager.getInstance().getInvoiceService();
 
         invoiceLogic.updateStatus(invoiceId, Invoice.STATUS.CANCELLED);
 
-        return new NextPage("/admin/invoices/view?id=" + invoiceId, "REDIRECT");
+        return new NextPage(ADMIN_INVOICES_VIEW_PATH + "?id=" + invoiceId, DispatchType.REDIRECT);
     }
 }

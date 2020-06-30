@@ -9,15 +9,16 @@ import ua.periodicals.model.Periodical;
 import ua.periodicals.model.User;
 import ua.periodicals.service.PeriodicalService;
 import ua.periodicals.service.impl.ServiceManager;
+import ua.periodicals.util.DispatchType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-public class AddToCart implements ActionCommand {
-    private final static String PERIODICAL_ID_REQUEST_PARAM = "periodicalId";
-    private final static String CART_SESSION_ATTRIBUTE = "cart";
+import static ua.periodicals.util.AttributeNames.*;
+import static ua.periodicals.util.Pages.MY_CART_PATH;
 
+public class AddToCart implements ActionCommand {
     private static final Logger LOG = LoggerFactory.getLogger(AddToCart.class);
 
     @Override
@@ -30,25 +31,24 @@ public class AddToCart implements ActionCommand {
 
         PeriodicalService periodicalLogic = ServiceManager.getInstance().getPeriodicalService();
         Long requestedPeriodicalId = Long.parseLong(request.getParameter(PERIODICAL_ID_REQUEST_PARAM));
-        User user = (User) session.getAttribute("user");
-
+        User user = (User) session.getAttribute(USER_ATTR);
 
         Periodical periodical = periodicalLogic.findById(requestedPeriodicalId);
 
-        Cart cart = (Cart) session.getAttribute(CART_SESSION_ATTRIBUTE);
+        Cart cart = (Cart) session.getAttribute(CART_ATTR);
 
         if (periodicalLogic.isSubscribedToPeriodical(user.getId(), requestedPeriodicalId)
             || itemIsInCart(cart, periodical)) {
 
             List<Periodical> periodicals = periodicalLogic.findAll();
 
-            request.setAttribute("periodicals", periodicals);
+            request.setAttribute(PERIODICALS_ATTR, periodicals);
 
-            Long invalidId = Long.parseLong(request.getParameter("periodicalId"));
-            request.setAttribute("invalidId", invalidId);
+            Long invalidId = Long.parseLong(request.getParameter(PERIODICAL_ID_ATTR));
+            request.setAttribute(INVALID_ID_ATTR, invalidId);
 
-            next.setPage("/?page=" + request.getParameter("currentPage") + "&inv_id=" + invalidId);
-            next.setDispatchType("REDIRECT");
+            next.setPage("/?page=" + request.getParameter(CURRENT_PAGE_ATTR) + "&inv_id=" + invalidId);
+            next.setDispatchType(DispatchType.REDIRECT);
 
         } else {
             if (cart == null) {
@@ -56,9 +56,9 @@ public class AddToCart implements ActionCommand {
             }
 
             cart.addItem(periodical);
-            session.setAttribute("cart", cart);
-            next.setPage("/my/cart");
-            next.setDispatchType("REDIRECT");
+            session.setAttribute(CART_ATTR, cart);
+            next.setPage(MY_CART_PATH);
+            next.setDispatchType(DispatchType.REDIRECT);
         }
 
         return next;
@@ -75,4 +75,3 @@ public class AddToCart implements ActionCommand {
         return isInCart;
     }
 }
-

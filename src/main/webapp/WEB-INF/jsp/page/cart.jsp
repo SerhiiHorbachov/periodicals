@@ -32,7 +32,7 @@
                                               currencyCode="USD"/>
                         </div>
                         <p class="card-text">${periodical.description}</p>
-                        <form action="/my/cart" method="post">
+                        <form action="${pageContext.request.contextPath}/my/cart" method="post">
                             <input type="hidden" name="periodicalId" value="${periodical.id}">
                             <input type="hidden" name="command" value="remove">
                             <div class="text-right">
@@ -50,7 +50,7 @@
         </c:forEach>
 
         <div>
-            <form action="/my/cart" method="post">
+            <form action="${pageContext.request.contextPath}/my/cart" method="post">
                 <input type="hidden" name="command" value="submit-invoice">
                 <div class="text-center">
                     <input type="submit" class="btn btn-success ml-auto"

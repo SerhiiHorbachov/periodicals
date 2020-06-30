@@ -14,7 +14,7 @@ public class ServiceManager {
         this.connectionManager = new ConnectionManagerImpl();
     }
 
-    public static ServiceManager getInstance() {
+    public static synchronized ServiceManager getInstance() {
         if (serviceManager == null) {
             serviceManager = new ServiceManager();
         }
@@ -35,5 +35,6 @@ public class ServiceManager {
     public UserService getUserService() {
         return new UserServiceImpl(connectionManager);
     }
-    
+
+
 }
