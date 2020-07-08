@@ -23,7 +23,7 @@ Serhii Horbachov
 
 ## Installation Instructions
 
-###Administrator workspace credentials: 
+### Administrator workspace credentials: 
 >login: admin@mail.com
 
 >password: password
