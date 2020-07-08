@@ -1,20 +1,35 @@
 package ua.periodicals.dao;
 
-import ua.periodicals.database.ConnectionManager;
-import ua.periodicals.database.DBCPDataSource;
 import ua.periodicals.exception.DaoException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Class manages transactions
+ *
+ * @author Serhii Hor
+ */
 public class EntityTransaction {
 
     private Connection connection;
 
+    /**
+     * Constructor.
+     *
+     * @param connection user for the transaction lifecycle.
+     */
     public EntityTransaction(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     * Sets Autocommit to false
+     *
+     * @param dao  single DAO object
+     * @param daos add other DAOs if multiple DAOs should use the same transaction
+     * @throws DaoException
+     */
     public void begin(AbstractDao dao, AbstractDao... daos) {
 
         if (connection == null) {
@@ -33,6 +48,11 @@ public class EntityTransaction {
         }
     }
 
+    /**
+     * Commits transaction.
+     *
+     * @throws DaoException
+     */
     public void commit() {
         try {
             connection.commit();
@@ -41,6 +61,11 @@ public class EntityTransaction {
         }
     }
 
+    /**
+     * Transaction rollback.
+     *
+     * @throws DaoException
+     */
     public void rollback() {
         try {
             connection.rollback();
@@ -49,6 +74,12 @@ public class EntityTransaction {
         }
     }
 
+    /**
+     * Finishes the transaction.
+     * Sets autocommit back to true and closes connection.
+     *
+     * @throws DaoException
+     */
     public void end() {
         try {
             connection.setAutoCommit(true);
@@ -63,6 +94,5 @@ public class EntityTransaction {
         }
 
     }
-
 
 }
