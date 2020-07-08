@@ -24,11 +24,11 @@ Serhii Horbachov
 ## Installation Instructions
 
 ###Administrator workspace credentials: 
->login: admin.@mail.com
+>login: admin@mail.com
 
 >password: password
 
 To access User's workspace, register your own user or use predefined one: 
->login: user.@mail.com
+>login: user@mail.com
 
 >password: password
