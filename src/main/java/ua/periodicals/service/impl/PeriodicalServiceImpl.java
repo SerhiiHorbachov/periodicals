@@ -2,7 +2,6 @@ package ua.periodicals.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
 import ua.periodicals.dao.impl.UserDao;
@@ -13,25 +12,44 @@ import ua.periodicals.exception.ValidationException;
 import ua.periodicals.model.Periodical;
 import ua.periodicals.service.PeriodicalService;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Package access. New instance should be created in @see ServiceManager
+ * Database Connection manager should be injected via constructor.
+ *
+ * @author Serhii Hor
+ */
 class PeriodicalServiceImpl implements PeriodicalService {
-    
     private static final Logger LOG = LoggerFactory.getLogger(PeriodicalServiceImpl.class);
 
     private ConnectionManager connectionManager;
+    private PeriodicalDao periodicalDao;
+    private UserDao userDao;
 
+    /**
+     * Constructor.
+     * DAOs are instantiated in the constructor.
+     *
+     * @param connectionManager provider for database connection.
+     */
     public PeriodicalServiceImpl(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
+        periodicalDao = new PeriodicalDao();
+        userDao = new UserDao();
     }
 
+    /**
+     * Find all periodicals from database
+     *
+     * @return List<Periodical>
+     * @throws LogicException
+     */
     public List<Periodical> findAll() {
         LOG.debug("Try to find all periodicals");
 
-        List<Periodical> periodicals = new ArrayList<>();
+        List<Periodical> periodicals;
 
-        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -58,10 +76,15 @@ class PeriodicalServiceImpl implements PeriodicalService {
         return periodicals;
     }
 
+    /**
+     * Count all stored periodicals
+     *
+     * @return Long total number of stored items.
+     * @throws LogicException
+     */
     public Long getCount() {
         Long count;
 
-        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -83,11 +106,18 @@ class PeriodicalServiceImpl implements PeriodicalService {
         return count;
     }
 
+    /**
+     * Finds periodicals per requested items.
+     *
+     * @param page  requested page
+     * @param total total number of items per page
+     * @return List<Periodical>
+     * @throws LogicException
+     */
     public List<Periodical> getPerPage(int page, int total) {
 
         List<Periodical> periodicals;
 
-        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         int start = page;
@@ -115,11 +145,17 @@ class PeriodicalServiceImpl implements PeriodicalService {
         return periodicals;
     }
 
+    /**
+     * Finds periodical by its id.
+     *
+     * @param id periodical Id.
+     * @return Periodical
+     * @throws LogicException
+     */
     public Periodical findById(long id) {
 
-        Periodical periodical = null;
+        Periodical periodical;
 
-        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -141,13 +177,20 @@ class PeriodicalServiceImpl implements PeriodicalService {
         return periodical;
     }
 
+    /**
+     * Stores periodical in the database. In case validation fails, exception is thrown.
+     *
+     * @param periodical
+     * @return boolean
+     * @throws ValidationException is thrown in case validation fails
+     * @throws LogicException
+     */
     public boolean create(Periodical periodical) {
 
         boolean result = false;
 
         validatePeriodical(periodical);
 
-        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -169,10 +212,17 @@ class PeriodicalServiceImpl implements PeriodicalService {
         return result;
     }
 
+    /**
+     * Updates periodical stored in the database
+     *
+     * @param periodical Periodical to be updated.
+     * @return boolean
+     * @throws ValidationException is thrown in case validation fails
+     * @throws LogicException
+     */
     public boolean update(Periodical periodical) {
         boolean result = false;
 
-        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -194,10 +244,16 @@ class PeriodicalServiceImpl implements PeriodicalService {
         return result;
     }
 
+    /**
+     * Deletes periodical by its id.
+     *
+     * @param id periodical id.
+     * @return boolean
+     * @throws LogicException
+     */
     public boolean delete(long id) {
         boolean result = false;
 
-        AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -219,12 +275,19 @@ class PeriodicalServiceImpl implements PeriodicalService {
         return result;
     }
 
+    /**
+     * Checks if User is subscribed to the Periodical
+     *
+     * @param userId       user id
+     * @param periodicalId periodical id
+     * @return boolean
+     * @throws LogicException
+     */
     public boolean isSubscribedToPeriodical(long userId, long periodicalId) {
         LOG.debug("Try to check if user id={} is subscribed to periodical id={}", userId, periodicalId);
 
         boolean result = false;
 
-        UserDao userDao = new UserDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -251,6 +314,12 @@ class PeriodicalServiceImpl implements PeriodicalService {
 
     }
 
+    /**
+     * Validates a Periodical by its fields.
+     *
+     * @param periodical Periodical to be validated
+     * @throws ValidationException
+     */
     private void validatePeriodical(Periodical periodical) {
         if (periodical.getName() == null || periodical.getName().isEmpty() || periodical.getName().isBlank()) {
             throw new ValidationException("Periodical name cannot be empty.");

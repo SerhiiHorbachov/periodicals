@@ -2,7 +2,6 @@ package ua.periodicals.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.periodicals.dao.AbstractInvoiceDao;
 import ua.periodicals.dao.AbstractPeriodicalDao;
 import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.InvoiceDao;
@@ -20,21 +19,40 @@ import ua.periodicals.service.InvoiceService;
 
 import java.util.List;
 
+/**
+ * The purpose of the class is to manage operations related to Invoice.
+ * Package access. New instance should be created in @see ServiceManager
+ * Database Connection manager should be injected via constructor.
+ *
+ * @author Serhii Hor
+ */
 class InvoiceServiceImpl implements InvoiceService {
-
     private static final Logger LOG = LoggerFactory.getLogger(InvoiceServiceImpl.class);
 
     private final ConnectionManager connectionManager;
 
-    InvoiceDao invoiceDao;
+    private InvoiceDao invoiceDao;
+    private OrderItemsDao orderItemsDao;
+    private UserDao userDao;
 
-    OrderItemsDao orderItemsDao;
-
-
+    /**
+     * Constructor.
+     *
+     * @param connectionManager provider for database connection.
+     */
     public InvoiceServiceImpl(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
+        this.invoiceDao = new InvoiceDao();
+        this.orderItemsDao = new OrderItemsDao();
+        this.userDao = new UserDao();
     }
 
+    /**
+     * @param userId user id.
+     * @param cart   card object that contains order items.
+     * @return boolean
+     * @throws LogicException
+     */
     @Override
     public boolean submit(long userId, Cart cart) {
         LOG.debug("Try to submit invoice, userId={}, cart: {}", userId, cart);
@@ -42,9 +60,6 @@ class InvoiceServiceImpl implements InvoiceService {
         boolean result;
 
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
-
-        invoiceDao = new InvoiceDao();
-        orderItemsDao = new OrderItemsDao();
 
         Invoice invoice = new Invoice(userId);
 
@@ -79,12 +94,17 @@ class InvoiceServiceImpl implements InvoiceService {
         return result;
     }
 
+    /**
+     * Finds all invoices with status 'IN_PROGRESS'
+     *
+     * @return List<Invoice>
+     * @throws LogicException
+     */
     @Override
     public List<Invoice> getInProgress() {
 
         List<Invoice> invoices;
 
-        AbstractInvoiceDao invoiceDao = new InvoiceDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -107,35 +127,37 @@ class InvoiceServiceImpl implements InvoiceService {
         return invoices;
     }
 
+    /**
+     * Restores a cart that contains Periodicals related to the Invoice
+     *
+     * @param invoiceId invoice id
+     * @return Cart contains Periodicals related to the Invoice
+     * @throws LogicException
+     */
     @Override
     public Cart getInvoiceCart(Long invoiceId) {
+        LOG.debug("Try to restore cart related to invoice id={}", invoiceId);
 
-        System.out.println(">>getInvoiceCart(), invoiceId=" + invoiceId);
         List<OrderItem> orderItems = null;
         Cart cart = new Cart();
 
-        OrderItemsDao orderItemDao = new OrderItemsDao();
         AbstractPeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
-            transaction.begin(orderItemDao, periodicalDao);
-            orderItems = orderItemDao.findByInvoiceId(invoiceId);
+            transaction.begin(orderItemsDao, periodicalDao);
+            orderItems = orderItemsDao.findByInvoiceId(invoiceId);
 
             for (OrderItem orderItem : orderItems) {
                 Periodical invoicePeriodical = periodicalDao.findById(orderItem.getPeriodicalId());
-
                 cart.addItem(invoicePeriodical);
-
             }
 
             transaction.commit();
         } catch (DaoException e) {
-
             LOG.error("Failed to get invoice cart.", e);
             transaction.rollback();
             throw new LogicException("Failed to perform transaction", e);
-
         } finally {
 
             try {
@@ -152,12 +174,19 @@ class InvoiceServiceImpl implements InvoiceService {
         return cart;
     }
 
+    /**
+     * Finds Invoice by its Id.
+     *
+     * @param id
+     * @return Invocie
+     * @throws LogicException
+     */
     @Override
     public Invoice findById(Long id) {
         LOG.debug("Try to find invoice by id={}", id);
-        Invoice invoice = new Invoice();
 
-        AbstractInvoiceDao invoiceDao = new InvoiceDao();
+        Invoice invoice;
+
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -185,6 +214,16 @@ class InvoiceServiceImpl implements InvoiceService {
         return invoice;
     }
 
+    /**
+     * Updates status of the invoice.
+     * In case status us changed to "COMPLETED", periodicals are assigned to the user.
+     * In case status us changed to "CANCELLED", only invoice status is changed.
+     *
+     * @param invoiceId
+     * @param status
+     * @return boolean
+     * @throws LogicException
+     */
     @Override
     public boolean updateStatus(long invoiceId, Invoice.STATUS status) {
         LOG.debug("Try to update invoice status: invoiceId" + invoiceId + ", status: " + status.toString());
@@ -192,9 +231,6 @@ class InvoiceServiceImpl implements InvoiceService {
         boolean result = false;
 
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
-        InvoiceDao invoiceDao = new InvoiceDao();
-        UserDao userDao = new UserDao();
-        OrderItemsDao orderItemsDao = new OrderItemsDao();
 
         try {
             transaction.begin(invoiceDao, userDao, orderItemsDao);

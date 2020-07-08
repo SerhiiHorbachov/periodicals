@@ -3,7 +3,6 @@ package ua.periodicals.service.impl;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.periodicals.dao.AbstractUserDao;
 import ua.periodicals.dao.EntityTransaction;
 import ua.periodicals.dao.impl.PeriodicalDao;
 import ua.periodicals.dao.impl.UserDao;
@@ -16,22 +15,48 @@ import ua.periodicals.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserServiceImpl implements UserService {
-    private final static String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{6,20})";
-
+/**
+ * Package access. New instance should be created in @see ServiceManager
+ * Database Connection manager should be injected via constructor.
+ *
+ * @author Serhii Hor
+ */
+class UserServiceImpl implements UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private final static String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{6,20})";
 
     private ConnectionManager connectionManager;
 
+    private UserDao userDao;
+    private PeriodicalDao periodicalDao;
+
+    /**
+     * Constructor.
+     *
+     * @param connectionManager provider for database connection.
+     */
     public UserServiceImpl(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
+        this.userDao = new UserDao();
+        this.periodicalDao = new PeriodicalDao();
     }
 
+    /**
+     * Authenticates user by his email and password.
+     * If authentication doesn't pass, AuthenticationException is thrown
+     *
+     * @param email    user email
+     * @param password user password
+     * @return User
+     * @throws AuthenticationException
+     * @throws InvalidPasswordException
+     * @throws LogicException
+     */
     public User authenticate(String email, String password) throws AuthenticationException, InvalidPasswordException {
 
         User user;
 
-        UserDao userDao = new UserDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -62,11 +87,17 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * Finds user stored in the database by Id.
+     *
+     * @param id user id
+     * @return User
+     * @throws LogicException
+     */
     public User findById(long id) {
 
         User user;
 
-        AbstractUserDao userDao = new UserDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -89,13 +120,20 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * Stores new user in the database. In case user object doesn't pass validation, exception is thrown.
+     *
+     * @param user new User to be stored in database
+     * @return boolean
+     * @throws LogicException
+     * @throws ValidationException
+     */
     public boolean create(User user) {
 
         boolean isCreated = false;
 
         validateUser(user);
 
-        AbstractUserDao userDao = new UserDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -122,14 +160,19 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * Find user's active subscriptions
+     *
+     * @param userId user Id
+     * @return List<Periodical>
+     * @throws LogicException
+     */
     public List<Periodical> getActiveSubscriptions(long userId) {
 
         LOG.debug("Try to get active subscriptions for user id={}", userId);
 
         List<Periodical> subscriptions = new ArrayList<>();
 
-        AbstractUserDao userDao = new UserDao();
-        PeriodicalDao periodicalDao = new PeriodicalDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -158,12 +201,18 @@ public class UserServiceImpl implements UserService {
         return subscriptions;
     }
 
+    /**
+     * Removes periodical from user's active subscription.
+     *
+     * @param userId       user id.
+     * @param periodicalId periodicals id.
+     * @return boolean
+     */
     public boolean removePeriodicalFromActiveSubscriptions(long userId, long periodicalId) {
         LOG.debug("Try to remove subscription id={} from user id={}", periodicalId, userId);
 
         int result = 0;
 
-        AbstractUserDao userDao = new UserDao();
         EntityTransaction transaction = new EntityTransaction(connectionManager.getConnection());
 
         try {
@@ -188,6 +237,12 @@ public class UserServiceImpl implements UserService {
         return result > 0;
     }
 
+    /**
+     * Validates a user.
+     *
+     * @param user user to be validated
+     * @throws ValidationException
+     */
     private void validateUser(User user) {
         if (user.getFirstName().isEmpty() || user.getFirstName().isBlank()) {
             throw new ValidationException("First name cannot be blank or empty");
@@ -210,6 +265,5 @@ public class UserServiceImpl implements UserService {
         }
 
     }
-
 
 }
