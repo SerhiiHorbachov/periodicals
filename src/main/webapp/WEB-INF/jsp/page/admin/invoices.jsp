@@ -29,8 +29,7 @@
                             <c:param name="id" value="${invoice.id}"/>
                         </c:url>
                         <a href="${url}" class="btn btn-outline-info">Process</a>
-                            <%--                        <a href="<c:url value="/admin/invoices/process?id=${invoice.id}"/>"--%>
-                            <%--                           class="btn btn-outline-info">Process</a>--%>
+
                     </td>
 
                 </tr>
