@@ -23,9 +23,7 @@ import java.util.List;
  */
 class UserServiceImpl implements UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
-
-    private final static String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()]).{6,20})";
-
+    
     private ConnectionManager connectionManager;
 
     private UserDao userDao;

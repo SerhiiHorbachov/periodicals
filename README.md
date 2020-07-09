@@ -28,9 +28,9 @@ Serhii Horbachov
 ### Administrator workspace credentials: 
 >login: admin@mail.com
 
->password: password
+>password: qweASD123$
 
 To access User's workspace, register your own user or use predefined one: 
 >login: user@mail.com
 
->password: password
+>password: qweASD123$
