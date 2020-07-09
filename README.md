@@ -8,15 +8,17 @@ Java external course final project
 ## Author
 Serhii Horbachov
 
-## UML
-![](src/main/resources/Publications_UML.png) 
+## Project Architecture
+![](src/main/resources/architecture.png) 
 
 ## Technologies
 
 * Java 11
 * PostgreSQL 
+* H2
 * Servlets
 * JSP
+* JUnit
 
 ## Database
 ![](src/main/resources/database.jpeg) 
@@ -26,9 +28,9 @@ Serhii Horbachov
 ### Administrator workspace credentials: 
 >login: admin@mail.com
 
->password: password
+>password: qweASD123$
 
 To access User's workspace, register your own user or use predefined one: 
 >login: user@mail.com
 
->password: password
+>password: qweASD123$

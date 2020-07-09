@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebFilter("/admin/*")
-public class AuthenticationAdminFilter implements Filter {
+public class AuthorizationAdminFilter implements Filter {
     public void destroy() {
     }
 

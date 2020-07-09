@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter("/main/*")
-public class UserAuthorization implements Filter {
+@WebFilter(urlPatterns = {"/my/*", "/main/*"})
+public class AuthorizationUserFilter implements Filter {
     public void destroy() {
     }
 
@@ -18,6 +18,7 @@ public class UserAuthorization implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
+
         HttpSession session = request.getSession();
 
         if (session == null || session.getAttribute("role") != User.Role.USER.toString()) {
